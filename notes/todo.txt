@@ -1,0 +1,6 @@
+add close option of x button
+
+take the persistent message code for having messages to players when they join. make a way to get the message history to show so the player can review the messages again.
+Take messages for player joined as a mod setting json object.
+
+add nested message support with types, i.e. titles, content types, etc. just map to inner styles.
