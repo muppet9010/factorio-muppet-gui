@@ -1,11 +1,13 @@
 {
-    "name": "say_it",
+    "name": "muppet_gui",
     "version": "17.0.0",
-    "title": "Say It",
+    "title": "Muppet GUIs",
     "author": "Muppet9010",
     "contact": "",
     "homepage": "https://mods.factorio.com/mod/say_it",
     "factorio_version": "0.17",
-    "dependencies": ["base >= 0.17"],
+    "dependencies": [
+        "base >= 0.17"
+    ],
     "description": "Used by streaming integrations to put text in the game"
 }
