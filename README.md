@@ -25,18 +25,20 @@ formatted JSON structure with comments "--" :
     --The message to be shown
     "message": {
         --A single text string to show
-        "text": [TEXT TO SHOW AS STRING],
+        "simpleText": [TEXT TO SHOW AS STRING],
     }
 
     --The close conditions
     "close": {
-        --If Timeout exists the message will auto close after this number of seconds.
-        "timeout": [AUTO CLOSE SECONDS]
+        --If Timeout exists and is > 0 the message will auto close after this number of seconds.
+        "timeout": [AUTO CLOSE SECONDS],
+        --If XButton exists and set to true then a close X button will be shown on the right of the GUI message
+        "xbutton": true
     }
 }
 ```
 
 example command with JSON value:
 ```
-/muppet_gui_show_message {"audience": {"players": ["muppet9010"], "logic": "only"}, "message": {"text": "a test message to show"}, "close":{"timeout":5}}
+/muppet_gui_show_message {"audience": {"players": ["muppet9010"], "logic": "only"}, "message": {"simpleText": "a test message to show"}, "close":{"timeout":5}}
 ```

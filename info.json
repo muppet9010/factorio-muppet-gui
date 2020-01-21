@@ -4,7 +4,7 @@
     "title": "Muppet GUIs",
     "author": "Muppet9010",
     "contact": "",
-    "homepage": "https://mods.factorio.com/mod/say_it",
+    "homepage": "https://mods.factorio.com/mod/muppet_gui",
     "factorio_version": "0.17",
     "dependencies": [
         "base >= 0.17"
