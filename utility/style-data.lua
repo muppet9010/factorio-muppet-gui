@@ -1,8 +1,8 @@
 --[[
     Regular "margin" and "padded" are 4 pixels on the left and top. This allows things to be stacked horizontally and vertically by default.
 ]]
+local Colors = require("utility/colors")
 local defaultStyle = data.raw["gui-style"]["default"]
-local guiHeadingColor = {255, 230, 192}
 
 defaultStyle.muppet_horizontal_flow = {
     type = "horizontal_flow_style",
@@ -285,7 +285,7 @@ for _, textName in pairs(textsToMakeHeadings) do
     defaultStyle[headingName] = {
         type = "label_style",
         parent = textName,
-        font_color = guiHeadingColor
+        font_color = Colors.guiheadingcolor
     }
 end
 
