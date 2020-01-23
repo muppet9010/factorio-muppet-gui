@@ -1,13 +1,13 @@
 {
     "name": "muppet_gui",
-    "version": "17.0.0",
+    "version": "18.0.0",
     "title": "Muppet GUIs",
     "author": "Muppet9010",
     "contact": "",
     "homepage": "https://mods.factorio.com/mod/muppet_gui",
-    "factorio_version": "0.17",
+    "factorio_version": "0.18",
     "dependencies": [
-        "base >= 0.17"
+        "base >= 0.18"
     ],
     "description": "Used by streaming integrations to put text in the game"
 }
