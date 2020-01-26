@@ -3,11 +3,11 @@
 
 A mod that can show messages as required. Designed for use with streaming integrations. WIP.
 
-All arguments via commands accept only a single table in JSON format. Must be entered as a single line. i.e. `{"audience": {"players": ["muppet9010"], "logic": "only"}, "message": "a test message to show"}`
+All commands accept only a single table in JSON format as their argument. Must be entered as a single line.
 
 muppet_gui_show_message
 ----------------
-A simple command to put a message in-game within a GUI to currently connected players as per the Audience JSON section. Takes 1 argument that is a JSON format WITHOUT spaces.
+A simple command to put a message in-game within a GUI to currently connected players as per the Audience JSON section.
 
 formatted JSON structure with comments "--" :
 ```
@@ -50,5 +50,5 @@ formatted JSON structure with comments "--" :
 
 example command with JSON value:
 ```
-/muppet_gui_show_message {"audience": {"players":["muppet9010"], "logic":"only"}, "message":{"simpleText":"a test message to show", "position":"top", "fontSize":"small", "fontStyle":"bold", "fontColor":""}, "close":{"timeout":5}}
+/muppet_gui_show_message {"audience": {"players":[], "logic":"all"}, "message":{"simpleText":"a test message to show", "position":"top", "fontSize":"large", "fontStyle":"bold", "fontColor":"lightred"}, "close":{"timeout":5}}
 ```
