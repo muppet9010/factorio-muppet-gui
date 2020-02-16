@@ -74,7 +74,7 @@ ShowMessage.CommandRun = function(commandData)
                                     name = elementName .. "_close",
                                     type = "sprite-button",
                                     sprite = "utility/close_white",
-                                    style = "muppet_sprite_button_frame_clickable",
+                                    style = "muppet_sprite_button_frameCloseButtonClickable",
                                     registerClick = {actionName = "ShowMessage.CloseSimpleTextFrame", data = {name = elementName, type = "frame"}}
                                 }
                             }
