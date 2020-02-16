@@ -1,6 +1,6 @@
 local ShowMessage = require("scripts/show-message")
 local EventScheduler = require("utility/event-scheduler")
-local GUIActions = require("utility/gui-actions")
+local GUIActionsClick = require("utility/gui-actions-click")
 
 local function CreateGlobals()
     ShowMessage.CreateGlobals()
@@ -21,4 +21,4 @@ script.on_configuration_changed(OnStartup)
 script.on_load(OnLoad)
 
 EventScheduler.RegisterScheduler()
-GUIActions.RegisterButtonActions()
+GUIActionsClick.MonitorGuiClickActions()

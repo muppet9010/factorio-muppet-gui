@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 18.0.2
+Date: 2020-02-16
+  Features:
+    - Simple text has a "maxWidth" OPTIONAL option to limit the width and wrap the message text on to new lines.
+  Changes:
+    - Updated to use updated Muppet GUI and style library for compatibility with other mods. Visually aproximately the same.
+  Bugfixes:
+  Info:
+---------------------------------------------------------------------------------------------------
 Version: 18.0.1
 Date: 2020-01-26
   Features:

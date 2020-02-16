@@ -1,5 +1,10 @@
-take the persistent message code for having messages to players when they join.
-make a way to get the message history of "important" flagged messages to show so the player can review the messages again. New players joining will get all important messages shown.
-Take messages for player joined as a mod setting json object.
+Next:
+    - some sort of concurrent x messages for a given "context". not sure how it would be managed.
 
-add nested message support with types, i.e. titles, content types, etc. just map to inner styles.
+
+Future:
+    - take the persistent message code for having messages to players when they join.
+    - make a way to get the message history of "important" flagged messages to show so the player can review the messages again. New players joining will get all important messages shown.
+    - Take messages for player joined as a mod setting json object.
+
+    - add nested message support with types, i.e. titles, content types, etc. just map to inner styles.

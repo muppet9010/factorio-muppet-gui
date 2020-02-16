@@ -3,7 +3,7 @@ local GUIUtil = require("utility/gui-util")
 local Commands = require("utility/commands")
 local Logging = require("utility/logging")
 local EventScheduler = require("utility/event-scheduler")
-local GUIActions = require("utility/gui-actions")
+local GUIActionsClick = require("utility/gui-actions-click")
 local Colors = require("utility/colors")
 --local Utils = require("utility/utils")
 
@@ -18,7 +18,7 @@ end
 ShowMessage.OnLoad = function()
     Commands.Register("muppet_gui_show_message", {"api-description.muppet_gui_show_message"}, ShowMessage.CommandRun, true)
     EventScheduler.RegisterScheduledEventType("ShowMessage.RemoveNamedElementForAll", ShowMessage.RemoveNamedElementForAll)
-    GUIActions.RegisterActionType("ShowMessage.CloseSimpleTextFrame", ShowMessage.CloseSimpleTextFrame)
+    GUIActionsClick.LinkGuiClickActionNameToFunction("ShowMessage.CloseSimpleTextFrame", ShowMessage.CloseSimpleTextFrame)
 end
 
 ShowMessage.CommandRun = function(commandData)
@@ -33,7 +33,7 @@ ShowMessage.CommandRun = function(commandData)
         return
     end
 
-    local messageSuccess, simpleText, position, fontType, fontColor = ShowMessage.GetMessageData(data)
+    local messageSuccess, simpleText, position, fontType, fontColor, maxWidth = ShowMessage.GetMessageData(data)
     if not messageSuccess then
         return
     end
@@ -47,16 +47,41 @@ ShowMessage.CommandRun = function(commandData)
         global.showMessage.count = global.showMessage.count + 1
         local elementName = "muppet_gui_show_message" .. global.showMessage.count
         for _, player in pairs(players) do
-            local frame = GUIUtil.AddElement({parent = player.gui[position], name = elementName, type = "frame", style = "muppet_margin_frame_content"}, "ShowMessage")
-            local textElement = GUIUtil.AddElement({parent = frame, name = elementName, type = "label", caption = simpleText, style = fontType})
-            if fontColor ~= nil then
-                textElement.style.font_color = fontColor
-            end
-            if closeButton == true then
-                local closeButtonName = elementName .. "_close"
-                GUIUtil.AddElement({parent = frame, name = closeButtonName, type = "sprite-button", sprite = "utility/close_white", style = "close_button"})
-                GUIActions.RegisterButtonToAction(closeButtonName, "sprite-button", "ShowMessage.CloseSimpleTextFrame", {name = elementName, type = "frame"})
-            end
+            GUIUtil.AddElement(
+                {
+                    parent = player.gui[position],
+                    name = elementName,
+                    type = "frame",
+                    direction = "horizontal",
+                    style = "muppet_frame_content_marginTL",
+                    storeName = "ShowMessage",
+                    styling = {maximal_width = maxWidth},
+                    children = {
+                        {
+                            type = "label",
+                            caption = simpleText,
+                            style = fontType,
+                            styling = {font_color = fontColor}
+                        },
+                        {
+                            type = "flow",
+                            direction = "horizontal",
+                            style = "muppet_flow_horizontal_marginTL_paddingBR",
+                            styling = {horizontal_align = "right", horizontally_stretchable = true},
+                            exclude = not closeButton,
+                            children = {
+                                {
+                                    name = elementName .. "_close",
+                                    type = "sprite-button",
+                                    sprite = "utility/close_white",
+                                    style = "muppet_sprite_button_frame_clickable",
+                                    registerClick = {actionName = "ShowMessage.CloseSimpleTextFrame", data = {name = elementName, type = "frame"}}
+                                }
+                            }
+                        }
+                    }
+                }
+            )
         end
         if closeTick ~= nil then
             EventScheduler.ScheduleEvent(closeTick, "ShowMessage.RemoveNamedElementForAll", global.showMessage.count, {name = elementName, type = "frame"})
@@ -154,14 +179,10 @@ ShowMessage.GetMessageData = function(data)
         Logging.LogPrint(errorMessageStart .. "mandatory 'message.fontStyle' string not valid type: '" .. fontStyle .. "'")
         return
     end
-    local fontType = "muppet_"
-    if fontSize ~= "small" then
-        fontType = fontType .. fontSize .. "_"
-    end
+    local fontType = "muppet_label_text_" .. fontSize .. "_"
     if fontStyle ~= "regular" then
-        fontType = fontType .. fontStyle .. "_"
+        fontType = fontType .. fontStyle
     end
-    fontType = fontType .. "text"
 
     local fontColorString = message.fontColor
     local fontColor = Colors.white
@@ -173,7 +194,16 @@ ShowMessage.GetMessageData = function(data)
         end
     end
 
-    return true, simpleText, position, fontType, fontColor
+    local maxWidth = nil
+    if message.maxWidth ~= nil and message.maxWidth ~= "" then
+        maxWidth = tonumber(message.maxWidth)
+        if maxWidth == nil or maxWidth <= 0 then
+            Logging.LogPrint(errorMessageStart .. "optional 'message.maxWidth' is set, but not a positive number: '" .. fontColorString .. "'")
+            return
+        end
+    end
+
+    return true, simpleText, position, fontType, fontColor, maxWidth
 end
 
 ShowMessage.GetCloseData = function(data)
@@ -220,7 +250,7 @@ end
 
 ShowMessage.CloseSimpleTextFrame = function(actionData)
     ShowMessage.RemoveNamedElementForPlayer(actionData.playerIndex, actionData.data.name, actionData.data.type)
-    GUIActions.RemoveButton(actionData.data.name, actionData.data.type)
+    GUIActionsClick.RemoveGuiForClick(actionData.data.name, actionData.data.type)
 end
 
 return ShowMessage
