@@ -1,5 +1,6 @@
 Next:
     - some sort of concurrent x messages for a given "context". not sure how it would be managed.
+    - at present we tidy up gui element click global entries when gui is removed for all via timeout. However there is no tidy up if no timeout is used and all players have just closed the same GUI via the close button.
 
 
 Future:

@@ -242,6 +242,7 @@ ShowMessage.RemoveNamedElementForAll = function(eventData)
     for _, player in pairs(game.players) do
         ShowMessage.RemoveNamedElementForPlayer(player.index, data.name, data.type)
     end
+    GUIActionsClick.RemoveGuiForClick(eventData.data.name .. "_close", "sprite-button")
 end
 
 ShowMessage.RemoveNamedElementForPlayer = function(playerIndex, name, type)
@@ -250,7 +251,6 @@ end
 
 ShowMessage.CloseSimpleTextFrame = function(actionData)
     ShowMessage.RemoveNamedElementForPlayer(actionData.playerIndex, actionData.data.name, actionData.data.type)
-    GUIActionsClick.RemoveGuiForClick(actionData.data.name, actionData.data.type)
 end
 
 return ShowMessage
