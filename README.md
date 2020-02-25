@@ -18,7 +18,8 @@ formatted JSON structure with comments "--" :
         "players": [
             [PLAYERNAME AS STRING],
             [PLAYERNAME N AS STRING]
-        ],
+        ]
+
         --Logic to be applied with the player list. Supports "only", "not" and "all". Only does the players list. Not does the players other than the list. All applies to all connected players.
         "logic": [LOGIC OPTION AS STRING]
     },
@@ -26,22 +27,29 @@ formatted JSON structure with comments "--" :
     --The message to be shown
     "message": {
         --Position on the screen. Supports "top", "left" and "center". Will be added to the end of any other mod GUIs in that position.
-        "position": [POSITION OPTION AS STRING],
+        "position": [POSITION OPTION AS STRING]
+
         --The size of the text. Valid options: "small", "medium", "large"
         "fontSize": [FONT SIZE AS STRING]
+
         --The style of the text. Valid options: "regular", "semibold", "bold"
         "fontStyle": [FONT STYLE AS STRING]
+
         --The color of the text. OPTIONAL. Valid options found in "utility/colors.lua" or at https://www.rapidtables.com/web/color/html-color-codes.html , i.e. "lightRed". Can be removed or blank string "" for the default of white.
         "fontColor": [COLOR NAME AS STRING]
 
         --A single text string to show
-        "simpleText": [TEXT TO SHOW AS STRING],
+        "simpleText": [TEXT TO SHOW AS STRING]
+
+        --Max width of the message box in pixels. OPTIONAL. Suggested minimum value is 200 and a large width is 1000. Text will wrap on to multiple lines. Exclude the option or set to blank string "" if no max width desiredt.
+        "maxWidth": [WIDTH IN PIXELS]
     }
 
     --The close conditions - must have 1 or more specified
     "close": {
         --If Timeout exists and is > 0 the message will auto close after this number of seconds.
-        "timeout": [AUTO CLOSE SECONDS],
+        "timeout": [AUTO CLOSE SECONDS]
+
         --If XButton exists and set to true then a close X button will be shown on the right of the GUI message
         "xbutton": true
     }
