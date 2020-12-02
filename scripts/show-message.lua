@@ -179,9 +179,9 @@ ShowMessage.GetMessageData = function(data)
         Logging.LogPrint(errorMessageStart .. "mandatory 'message.fontStyle' string not valid type: '" .. fontStyle .. "'")
         return
     end
-    local fontType = "muppet_label_text_" .. fontSize .. "_"
+    local fontType = "muppet_label_text_" .. fontSize
     if fontStyle ~= "regular" then
-        fontType = fontType .. fontStyle
+        fontType = fontType .. "_" .. fontStyle
     end
 
     local fontColorString = message.fontColor

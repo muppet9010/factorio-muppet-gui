@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 20.0.3
+Date: 2020-12-02
+  Features:
+    - Update to Factorio 1.1 as-is.
+  Changes:
+  Bugfixes:
+    - Fix crash for regular type font usage.
+  Info:
+    - Update to latest Utility library. Messages created in older mod versions may not display correctly.
+---------------------------------------------------------------------------------------------------
 Version: 18.0.2
 Date: 2020-02-16
   Features:
