@@ -9,3 +9,5 @@ Future:
     - Take messages for player joined as a mod setting json object.
 
     - add nested message support with types, i.e. titles, content types, etc. just map to inner styles.
+	
+	-  Add timer/clock to the text display mod so it can be used with time limited abilities via rcon on screen nicely.
