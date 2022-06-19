@@ -1,6 +1,9 @@
 Next:
     - some sort of concurrent x messages for a given "context". not sure how it would be managed.
     - at present we tidy up gui element click global entries when gui is removed for all via timeout. However there is no tidy up if no timeout is used and all players have just closed the same GUI via the close button.
+	- for the center position is it possible to have "above center", that forces some empty gap to the bottom of the element so its somehwt up from the center. So it doesn;t block whatever is in the middle of the screen. May need to take the offset on the command as streamers have some control based on thier message usage etc? Note it will leave the gaps if multiple texts are present at a time.
+	- Why do I have the text in a layered container, its generally used for short messages and so just the outer dark container is fine. If the close button is being used then we need the inner container, but should also have a title option. Although not sure when that would be used from RCON. really the close button and title should be a new type.
+	- add interfaces for the commands as the purpose of this in the future is to save me having each mod need to impliment its own message logic.
 
 
 Future:
@@ -10,4 +13,4 @@ Future:
 
     - add nested message support with types, i.e. titles, content types, etc. just map to inner styles.
 	
-	-  Add timer/clock to the text display mod so it can be used with time limited abilities via rcon on screen nicely.
+	- Add timer/clock to the text display mod so it can be used with time limited abilities via rcon on screen nicely.
