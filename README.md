@@ -3,15 +3,18 @@
 
 A mod that can show messages as required. Designed for use with streaming integrations.
 
-All commands accept only a single dictionary in JSON format as their argument. Must be entered as a single line on the command.
+
+
 
 Simple In-game Message
 ===============
 
 A simple command to put a message in-game within a GUI to players. Supports options around auto closing or close X button, white or black listing named players from the message, as well as the look and feel of the message.
 
-- Command syntax: `/muppet_gui_show_message JSON`
-- Formatted JSON structure with comments "--" :
+#### Options
+
+The available options is given below in its object structure as JSON format. It has inline comments that aren't part of the JSON syntax and should not be included in any usage of the feature.
+
 ```
 	{
 		--The audience of the message
@@ -58,10 +61,38 @@ A simple command to put a message in-game within a GUI to players. Supports opti
 	}
 ```
 
-#### Examples
+-------------------------------------------------
+
+
+
+#### Command
+
+Command syntax: `/muppet_gui_show_message [OPTIONS JSON]`
+
+The [OPTIONS JSON] in the command syntax is the above Options object in JSON string format.
+
+Examples:
 
 An auto closing GUI for all connected players, shown at the top of the screen:
 `/muppet_gui_show_message {"audience": {"players":[], "logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5}}`
 
 A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
 `/muppet_gui_show_message {"audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"center", "fontSize":"small", "fontStyle":"bold", "fontColor":"white"}, "close":{"xbutton":true}}`
+
+-------------------------------------------------
+
+
+
+#### Remote Interface Examples
+
+Remote Interface syntax: `remote.call("muppet_gui", "show_message", [OPTIONS TABLE]}`
+
+The [OPTIONS TABLE] in the remote interface syntax is the above Options object as a Lua table.
+
+Examples:
+
+An auto closing GUI for all connected players, shown at the top of the screen:
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
+
+A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
+`/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="center", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`

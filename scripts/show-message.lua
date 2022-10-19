@@ -36,7 +36,7 @@ local Colors = require("utility.lists.colors")
 ---@alias ShowMessage_FontSize "small"|"medium"|"large"
 ---@alias ShowMessage_FontStyle "regular"|"semibold"|"bold"
 
-local errorMessageStart = "ERROR: command muppet_gui_show_message: "
+
 
 ShowMessage.CreateGlobals = function()
     global.showMessage = global.showMessage or {} ---@class ShowMessage_Global
@@ -53,25 +53,55 @@ end
 --- The show_message command has been run.
 ---@param commandData CustomCommandData
 ShowMessage.ShowMessage_CommandRun = function(commandData)
+    local errorMessageStart = "ERROR: command muppet_gui_show_message: "
+
     local data = game.json_to_table(commandData.parameter) --[[@as ShowMessageDetails]]
     if data == nil then
         Logging.LogPrintError(errorMessageStart .. "mandatory JSON object not provided")
         return
     end
 
-    local audienceSuccess, players = ShowMessage.GetAudienceData(data)
-    if not audienceSuccess then
+    local errorMessage = ShowMessage.ShowMessage_DoIt(data)
+    if errorMessage ~= nil then
+        Logging.LogPrintError(errorMessageStart .. errorMessage)
+        return
+    end
+end
+
+--- The show_message command has been run.
+---@param data ShowMessageDetails
+ShowMessage.ShowMessage_RemoteInterface = function(data)
+    local errorMessageStart = "ERROR: remote `muppet_gui.show_message`: "
+
+    if data == nil or type(data) ~= "table" then
+        Logging.LogPrintError(errorMessageStart .. "mandatory options object not provided")
         return
     end
 
-    local messageSuccess, simpleText, position, fontType, fontColor, maxWidth = ShowMessage.GetMessageData(data)
-    if not messageSuccess then
+    local errorMessage = ShowMessage.ShowMessage_DoIt(data)
+    if errorMessage ~= nil then
+        Logging.LogPrintError(errorMessageStart .. errorMessage)
         return
     end
+end
 
-    local closeSuccess, closeTick, closeButton = ShowMessage.GetCloseData(data)
-    if not closeSuccess then
-        return
+--- Add the message from the command/remote.
+---@param data ShowMessageDetails
+---@return string|nil errorMessage
+ShowMessage.ShowMessage_DoIt = function(data)
+    local audienceErrorMessage, players = ShowMessage.GetAudienceData(data)
+    if audienceErrorMessage ~= nil then
+        return audienceErrorMessage
+    end
+
+    local messageErrorMessage, simpleText, position, fontType, fontColor, maxWidth = ShowMessage.GetMessageData(data)
+    if messageErrorMessage ~= nil then
+        return messageErrorMessage
+    end
+
+    local closeErrorMessage, closeTick, closeButton = ShowMessage.GetCloseData(data)
+    if closeErrorMessage ~= nil then
+        return closeErrorMessage
     end
 
     if simpleText ~= nil then
@@ -128,32 +158,31 @@ ShowMessage.ShowMessage_CommandRun = function(commandData)
             EventScheduler.ScheduleEventOnce(closeTick, "ShowMessage.RemoveNamedElementForAll", global.showMessage.count, { name = elementName, type = "frame" }--[[@as GuiToRemoveDetails]] )
         end
     end
+
+    return nil
 end
 
 --- Work out the audience settings from the raw data.
 ---@param data ShowMessageDetails
----@return boolean success
+---@return string|nil errorMessage
 ---@return LuaPlayer[] players
 ---@return ShowMessage_Logic logic
 ShowMessage.GetAudienceData = function(data)
     if data.audience == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'audience' object not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'audience' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local players = {}
     local logic = data.audience.logic
     if logic == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'audience.logic' string not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'audience.logic' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if logic == "all" then
         players = game.connected_players
     else
         local playerNames = data.audience.players
         if playerNames == nil then
-            Logging.LogPrintError(errorMessageStart .. "mandatory 'audience.players' array not provided")
-            return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "mandatory 'audience.players' array not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         if logic == "only" then
             for _, player in pairs(game.connected_players) do
@@ -175,17 +204,16 @@ ShowMessage.GetAudienceData = function(data)
             end
             players = potentialPlayers
         else
-            Logging.LogPrintError(errorMessageStart .. "invalid 'audience.logic' string not provided")
-            return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "invalid 'audience.logic' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
-    return true, players, logic
+    return nil, players, logic
 end
 
 --- Work out the message details from the raw data.
 ---@param data ShowMessageDetails
----@return boolean success
+---@return string|nil errorMessage
 ---@return string simpleText
 ---@return ShowMessage_Position position
 ---@return ShowMessage_FontStyle fontType
@@ -194,44 +222,36 @@ end
 ShowMessage.GetMessageData = function(data)
     local message = data.message
     if message == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message' object not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local simpleText = message.simpleText
     if simpleText ~= nil then
         simpleText = tostring(simpleText)
     else
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.simpleText' object not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.simpleText' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local position = message.position
     if position == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.position' string not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.position' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if position ~= "top" and position ~= "left" and position ~= "center" then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.position' string not valid type: '" .. position .. "'")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.position' string not valid type: '" .. position .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local fontSize, fontStyle = message.fontSize, message.fontStyle
     if fontSize == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.fontSize' string not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.fontSize' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontSize ~= "small" and fontSize ~= "medium" and fontSize ~= "large" then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.fontSize' string not valid type: '" .. fontSize .. "'")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.fontSize' string not valid type: '" .. fontSize .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.fontStyle' string not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.fontStyle' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle ~= "regular" and fontStyle ~= "semibold" and fontStyle ~= "bold" then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'message.fontStyle' string not valid type: '" .. fontStyle .. "'")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.fontStyle' string not valid type: '" .. fontStyle .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     local fontType = "muppet_label_text_" .. fontSize
     if fontStyle ~= "regular" then
@@ -243,8 +263,7 @@ ShowMessage.GetMessageData = function(data)
     if fontColorString ~= nil and fontColorString ~= "" then
         fontColor = Colors[fontColorString] --[[@as Color]]
         if fontColor == nil then
-            Logging.LogPrintError(errorMessageStart .. "mandatory 'message.fontColor' string not valid type: '" .. fontColorString .. "'")
-            return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "mandatory 'message.fontColor' string not valid type: '" .. fontColorString .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
@@ -252,25 +271,23 @@ ShowMessage.GetMessageData = function(data)
     if message.maxWidth ~= nil and message.maxWidth ~= "" then
         maxWidth = tonumber(message.maxWidth) --[[@as uint]]
         if maxWidth == nil or maxWidth <= 0 then
-            Logging.LogPrintError(errorMessageStart .. "optional 'message.maxWidth' is set, but not a positive number: '" .. fontColorString .. "'")
-            return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional 'message.maxWidth' is set, but not a positive number: '" .. fontColorString .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         maxWidth = math.floor(maxWidth) --[[@as uint]]
     end
 
-    return true, simpleText, position, fontType, fontColor, maxWidth
+    return nil, simpleText, position, fontType, fontColor, maxWidth
 end
 
 --- Work out the close details from the raw data.
 ---@param data ShowMessageDetails
----@return boolean success
+---@return string|nil errorMessage
 ---@return uint|nil closeTick
 ---@return boolean closeButton
 ShowMessage.GetCloseData = function(data)
     local close = data.close
     if close == nil then
-        Logging.LogPrintError(errorMessageStart .. "mandatory 'close' object not provided")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'close' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local closeTick ---@type uint|nil
@@ -278,8 +295,7 @@ ShowMessage.GetCloseData = function(data)
     if CloseTimeoutString ~= nil then
         local closeTimeout = tonumber(CloseTimeoutString)
         if closeTimeout == nil or closeTimeout <= 0 then
-            Logging.LogPrintError(errorMessageStart .. "'close.timeout' specified, but not valid positive number: '" .. CloseTimeoutString .. "'")
-            return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "'close.timeout' specified, but not valid positive number: '" .. CloseTimeoutString .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         closeTick = game.tick + (closeTimeout * 60)
     end
@@ -290,11 +306,10 @@ ShowMessage.GetCloseData = function(data)
     end
 
     if closeTick == nil and closeButton == false then
-        Logging.LogPrintError(errorMessageStart .. "no way to close GUI specified")
-        return false ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "no way to close GUI specified" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
-    return true, closeTick, closeButton
+    return nil, closeTick, closeButton
 end
 
 --- Called to remove all instances of a specific GUI for all players after a set time period.

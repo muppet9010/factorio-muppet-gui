@@ -1,7 +1,10 @@
+Now:
+    - check the input variables and tighten down on input types and values.
+
+
 Next:
 	- for the center position is it possible to have "above center", that forces some empty gap to the bottom of the element so its somewhat up from the center. So it doesn't block whatever is in the middle of the screen. May need to take the offset on the command as streamers have some control based on their message usage etc? Note it will leave the gaps if multiple texts are present at a time.
 	- Why do I have the text in a layered container, its generally used for short messages and so just the outer dark container is fine. If the close button is being used then we need the inner container, but should also have a title option. Although not sure when that would be used from RCON. really the close button and title should be a new type.
-	- add interfaces for the commands as the purpose of this in the future is to save me having each mod need to implement its own message logic.
 	- Add timer to the text display mod so it can be used with time limited abilities via rcon on screen nicely. Support counting up/down and min/max values.
     - look at way via remote interfaces that existing text's can be removed by a name. For use with scripting chat integrations, i.e. add a countdown that is then removed when the player dies. Will need to avoid duplicate entries being created with the same name.
 
