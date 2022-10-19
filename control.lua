@@ -1,6 +1,6 @@
-local ShowMessage = require("scripts/show-message")
-local EventScheduler = require("utility/event-scheduler")
-local GUIActionsClick = require("utility/gui-actions-click")
+local ShowMessage = require("scripts.show-message")
+local EventScheduler = require("utility.manager-libraries.event-scheduler")
+local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
 
 local function CreateGlobals()
     ShowMessage.CreateGlobals()
