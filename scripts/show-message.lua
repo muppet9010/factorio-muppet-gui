@@ -5,6 +5,7 @@ local Logging = require("utility.helper-utils.logging-utils")
 local EventScheduler = require("utility.manager-libraries.event-scheduler")
 local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
 local Colors = require("utility.lists.colors")
+local MathUtils = require("utility.helper-utils.math-utils")
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -54,6 +55,7 @@ end
 ---@param commandData CustomCommandData
 ShowMessage.ShowMessage_CommandRun = function(commandData)
     local errorMessageStart = "ERROR: command muppet_gui_show_message: "
+    local warningPrefix = "Warning: command muppet_gui_show_message: "
 
     local data = game.json_to_table(commandData.parameter) --[[@as ShowMessageDetails]]
     if data == nil then
@@ -61,7 +63,7 @@ ShowMessage.ShowMessage_CommandRun = function(commandData)
         return
     end
 
-    local errorMessage = ShowMessage.ShowMessage_DoIt(data)
+    local errorMessage = ShowMessage.ShowMessage_DoIt(data, warningPrefix)
     if errorMessage ~= nil then
         Logging.LogPrintError(errorMessageStart .. errorMessage)
         return
@@ -72,13 +74,14 @@ end
 ---@param data ShowMessageDetails
 ShowMessage.ShowMessage_RemoteInterface = function(data)
     local errorMessageStart = "ERROR: remote `muppet_gui.show_message`: "
+    local warningPrefix = "Warning: remote `muppet_gui.show_message`: "
 
     if data == nil or type(data) ~= "table" then
         Logging.LogPrintError(errorMessageStart .. "mandatory options object not provided")
         return
     end
 
-    local errorMessage = ShowMessage.ShowMessage_DoIt(data)
+    local errorMessage = ShowMessage.ShowMessage_DoIt(data, warningPrefix)
     if errorMessage ~= nil then
         Logging.LogPrintError(errorMessageStart .. errorMessage)
         return
@@ -87,8 +90,9 @@ end
 
 --- Add the message from the command/remote.
 ---@param data ShowMessageDetails
+---@param warningPrefix string
 ---@return string|nil errorMessage
-ShowMessage.ShowMessage_DoIt = function(data)
+ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
     local audienceErrorMessage, players = ShowMessage.GetAudienceData(data)
     if audienceErrorMessage ~= nil then
         return audienceErrorMessage
@@ -99,7 +103,7 @@ ShowMessage.ShowMessage_DoIt = function(data)
         return messageErrorMessage
     end
 
-    local closeErrorMessage, closeTick, closeButton = ShowMessage.GetCloseData(data)
+    local closeErrorMessage, closeTick, closeButton = ShowMessage.GetCloseData(data, warningPrefix)
     if closeErrorMessage ~= nil then
         return closeErrorMessage
     end
@@ -284,10 +288,11 @@ end
 
 --- Work out the close details from the raw data.
 ---@param data ShowMessageDetails
+---@param warningPrefix string
 ---@return string|nil errorMessage
 ---@return uint|nil closeTick
 ---@return boolean closeButton
-ShowMessage.GetCloseData = function(data)
+ShowMessage.GetCloseData = function(data, warningPrefix)
     local close = data.close
     if close == nil then
         return "mandatory 'close' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
@@ -300,7 +305,11 @@ ShowMessage.GetCloseData = function(data)
         if closeTimeout == nil or closeTimeout <= 0 then
             return "'close.timeout' specified, but not valid positive number, got: `" .. tostring(CloseTimeoutString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
-        closeTick = game.tick + (math.floor(closeTimeout) * 60)
+        closeTick = game.tick + math.floor(closeTimeout * 60)
+        if closeTick > MathUtils.uintMax then
+            closeTick = MathUtils.uintMax
+            Logging.LogPrintWarning(warningPrefix .. "close.timeout was set so large its been capped to the end of Factorio time, timeout requested: " .. tostring(closeTimeout))
+        end
     end
 
     local closeButton
