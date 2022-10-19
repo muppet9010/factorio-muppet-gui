@@ -31,7 +31,6 @@ local Colors = require("utility.lists.colors")
 ---@field name string
 ---@field type string
 
-
 ---@alias ShowMessage_Logic "only"|"not"|"all"
 ---@alias ShowMessage_Position "top"|"left"|"center"
 ---@alias ShowMessage_FontSize "small"|"medium"|"large"
@@ -42,7 +41,7 @@ local errorMessageStart = "ERROR: command muppet_gui_show_message: "
 ShowMessage.CreateGlobals = function()
     global.showMessage = global.showMessage or {} ---@class ShowMessage_Global
     global.showMessage.count = global.showMessage.count or 0 ---@type int
-    global.showMessage.buttons = nil ---@type nil Was created as an empty table in a previous version. So destroy it just to be safe.
+    global.showMessage.buttons = {} ---@type table<string, table<uint, LuaPlayer>> # A table with the close button name to a list of players that have it open still. The player list is player.index to LuaPlayer.
 end
 
 ShowMessage.OnLoad = function()
@@ -78,6 +77,13 @@ ShowMessage.ShowMessage_CommandRun = function(commandData)
     if simpleText ~= nil then
         global.showMessage.count = global.showMessage.count + 1
         local elementName = "muppet_gui_show_message" .. global.showMessage.count
+
+        local buttonPlayerList ---@type table<uint, LuaPlayer>
+        if closeButton then
+            buttonPlayerList = {}
+            global.showMessage.buttons[elementName] = buttonPlayerList
+        end
+
         for _, player in pairs(players) do
             GUIUtil.AddElement(
                 {
@@ -114,6 +120,9 @@ ShowMessage.ShowMessage_CommandRun = function(commandData)
                     }
                 }
             )
+            if closeButton then
+                buttonPlayerList[player.index] = player
+            end
         end
         if closeTick ~= nil then
             EventScheduler.ScheduleEventOnce(closeTick, "ShowMessage.RemoveNamedElementForAll", global.showMessage.count, { name = elementName, type = "frame" }--[[@as GuiToRemoveDetails]] )
@@ -288,14 +297,41 @@ ShowMessage.GetCloseData = function(data)
     return true, closeTick, closeButton
 end
 
---- Called to remove all instances of a specific GUI for all players.
+--- Called to remove all instances of a specific GUI for all players after a set time period.
 ---@param eventData UtilityScheduledEvent_CallbackObject
 ShowMessage.RemoveNamedElementForAll = function(eventData)
     local data = eventData.data ---@type GuiToRemoveDetails
+
+    -- Remove this GUI for every player (past or present).
     for _, player in pairs(game.players) do
         ShowMessage.RemoveNamedElementForPlayer(player.index, data.name, data.type)
     end
-    GUIActionsClick.RemoveGuiForClick(eventData.data.name .. "_close", "sprite-button")
+
+    -- If there was a close button on this GUI tidy up the globals related to it.
+    if global.showMessage.buttons[data.name] ~= nil then
+        GUIActionsClick.RemoveGuiForClick(data.name .. "_close", "sprite-button")
+        global.showMessage.buttons[data.name] = nil
+    end
+end
+
+--- Player clicks to close their specific GUI.
+---@param actionData any
+ShowMessage.CloseSimpleTextFrame = function(actionData)
+    local data = actionData.data ---@type GuiToRemoveDetails
+
+    -- Remove the GUI for this player.
+    ShowMessage.RemoveNamedElementForPlayer(actionData.playerIndex, data.name, data.type)
+
+    -- Track that the GUI has been closed for this player.
+    local playersGuiOpen = global.showMessage.buttons[data.name]
+    if playersGuiOpen ~= nil then
+        playersGuiOpen[actionData.playerIndex] = nil
+        -- If this was the last player with this GUI open then remove the global entries.
+        if not next(playersGuiOpen) then
+            GUIActionsClick.RemoveGuiForClick(data.name .. "_close", "sprite-button")
+            global.showMessage.buttons[data.name] = nil
+        end
+    end
 end
 
 --- Actually remove the GUI element.
@@ -304,13 +340,6 @@ end
 ---@param type string
 ShowMessage.RemoveNamedElementForPlayer = function(playerIndex, name, type)
     GUIUtil.DestroyElementInPlayersReferenceStorage(playerIndex, "ShowMessage", name, type)
-end
-
---- Called to close a specific GUI for a specific player.
----@param actionData any
-ShowMessage.CloseSimpleTextFrame = function(actionData)
-    local data = actionData.data ---@type GuiToRemoveDetails
-    ShowMessage.RemoveNamedElementForPlayer(actionData.playerIndex, data.name, data.type)
 end
 
 return ShowMessage

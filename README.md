@@ -1,12 +1,12 @@
 # factorio-muppet-gui
 
 
-A mod that can show messages as required. Designed for use with streaming integrations. WIP.
+A mod that can show messages as required. Designed for use with streaming integrations.
 
 All commands accept only a single dictionary in JSON format as their argument. Must be entered as a single line on the command.
 
 Simple In-game Message
-----------------
+===============
 
 A simple command to put a message in-game within a GUI to players. Supports options around auto closing or close X button, white or black listing named players from the message, as well as the look and feel of the message.
 
@@ -57,7 +57,11 @@ A simple command to put a message in-game within a GUI to players. Supports opti
 		}
 	}
 ```
-- example command 1:
-	`/muppet_gui_show_message {"audience": {"players":[], "logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5}}`
-- example command 2:
-	`/muppet_gui_show_message {"audience": {"players":["muppet9010", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"top", "fontSize":"small", "fontStyle":"bold", "fontColor":"white"}, "close":{"xbutton":true}}`
+
+#### Examples
+
+An auto closing GUI for all connected players, shown at the top of the screen:
+`/muppet_gui_show_message {"audience": {"players":[], "logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5}}`
+
+A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
+`/muppet_gui_show_message {"audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"center", "fontSize":"small", "fontStyle":"bold", "fontColor":"white"}, "close":{"xbutton":true}}`

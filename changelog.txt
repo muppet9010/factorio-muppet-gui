@@ -6,6 +6,7 @@ Date: 2020-10-XXXXX
     - Custom colors renamed to be camel cased: only lightred to lightRed, and guiHeadingColor to guiHeadingColor. The standard color names in the list remain all lower cased. `lightred` was in example text in readme previously.
   Bugfixes:
   Info:
+    - Mod tidy up - Mod globals related to close buttons will remove themselves when finished with. Avoids the global list getting infinitely long which could in theory cause slowness or save file size growth over millennium. Makes any future debugging easier.
 ---------------------------------------------------------------------------------------------------
 Version: 20.0.3
 Date: 2020-12-02
