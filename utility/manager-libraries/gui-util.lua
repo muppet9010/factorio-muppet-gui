@@ -95,7 +95,9 @@ GuiUtil.AddElement = function(elementDetails)
     end
 
     -- Create calculated values.
-    elementDetailsNoClass.name = GuiUtil.GenerateGuiElementName(elementDetails.descriptiveName, elementDetails.type)
+    if elementDetails.descriptiveName ~= nil and elementDetails.type ~= nil then
+        elementDetailsNoClass.name = GuiUtil.GenerateGuiElementName(elementDetails.descriptiveName, elementDetails.type)
+    end
     elementDetails.caption = GuiUtil._ReplaceLocaleNameSelfWithGeneratedName(elementDetails, "caption")
     elementDetails.tooltip = GuiUtil._ReplaceLocaleNameSelfWithGeneratedName(elementDetails, "tooltip")
     if elementDetails.style ~= nil and string.sub(elementDetails.style, 1, 7) == "muppet_" then
@@ -110,15 +112,15 @@ GuiUtil.AddElement = function(elementDetails)
 
     local returnElements = {} ---@type table<string, LuaGuiElement>
     if returnElement then
-        if elementDetailsNoClass.descriptiveName == nil then
-            error("GuiUtil.AddElement returnElement attribute requires element descriptiveName to be supplied.")
+        if elementDetailsNoClass.name == nil then
+            error("GuiUtil.AddElement returnElement attribute requires element `descriptiveName` and `type` to be supplied.")
         else
             returnElements[elementDetailsNoClass.name] = element
         end
     end
     if storeName ~= nil then
-        if elementDetailsNoClass.descriptiveName == nil then
-            error("GuiUtil.AddElement storeName attribute requires element descriptiveName to be supplied.")
+        if elementDetailsNoClass.name == nil then
+            error("GuiUtil.AddElement storeName attribute requires element `descriptiveName` and `type` to be supplied.")
         else
             GuiUtil.AddElementToPlayersReferenceStorage(element.player_index, storeName, elementDetailsNoClass.name, element)
         end
@@ -127,15 +129,15 @@ GuiUtil.AddElement = function(elementDetails)
         GuiUtil._ApplyStylingArgumentsToElement(element, styling)
     end
     if registerClick ~= nil then
-        if elementDetailsNoClass.descriptiveName == nil then
-            error("GuiUtil.AddElement registerClick attribute requires element descriptiveName to be supplied.")
+        if elementDetailsNoClass.name == nil then
+            error("GuiUtil.AddElement registerClick attribute requires element `descriptiveName` and `type` to be supplied.")
         else
             GuiActionsClick.RegisterGuiForClick(elementDetailsNoClass.descriptiveName, elementDetails.type, registerClick.actionName, registerClick.data, registerClick.disabled)
         end
     end
     if registerCheckedStateChange ~= nil then
-        if elementDetailsNoClass.descriptiveName == nil then
-            error("GuiUtil.AddElement registerCheckedStateChange attribute requires element descriptiveName to be supplied.")
+        if elementDetailsNoClass.name == nil then
+            error("GuiUtil.AddElement registerCheckedStateChange attribute requires element `descriptiveName` and `type` to be supplied.")
         else
             GuiActionsChecked.RegisterGuiForCheckedStateChange(elementDetailsNoClass.descriptiveName, elementDetails.type, registerCheckedStateChange.actionName, registerCheckedStateChange.data, registerCheckedStateChange.disabled)
         end

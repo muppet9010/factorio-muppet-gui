@@ -1,3 +1,9 @@
 20.11.44
 
 Created by Muppet9010: https://github.com/muppet9010/Factorio-Utils
+
+
+Hotfixes
+---------
+
+- manager-libraries\gui-util.lua: GuiUtil.AddElement() - `descriptiveName` should be optional, but was mandatory. Updated checks for features that use it also. Seems to be missed stuff from mass GUI library updates in the past.
