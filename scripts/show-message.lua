@@ -182,29 +182,32 @@ ShowMessage.GetAudienceData = function(data)
     else
         local playerNames = data.audience.players
         if playerNames == nil then
-            return "mandatory 'audience.players' array not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "mandatory 'audience.players' array not provided and logic wasn't the `all` option." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        end
+        local playerNamesAsKeys = {} ---@type table<string, string>
+        for _, playerName in pairs(playerNames) do
+            if type(playerName) == "string" then
+                playerNamesAsKeys[playerName] = playerName
+            else
+                return "'audience.players' array contained value that wasn't a string, got: `" .. tostring(playerName) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            end
         end
         if logic == "only" then
             for _, player in pairs(game.connected_players) do
-                for _, playerName in pairs(playerNames) do
-                    if player.name == playerName then
-                        table.insert(players, player)
-                    end
+                if playerNamesAsKeys[player.name] ~= nil then
+                    table.insert(players, player)
                 end
             end
         elseif logic == "not" then
             local potentialPlayers = game.connected_players
             for i, player in pairs(potentialPlayers) do
-                for _, playerName in pairs(playerNames) do
-                    if player.name == playerName then
-                        table.remove(potentialPlayers, i)
-                        break
-                    end
+                if playerNamesAsKeys[player.name] ~= nil then
+                    table.remove(potentialPlayers, i)
                 end
             end
             players = potentialPlayers
         else
-            return "invalid 'audience.logic' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "invalid 'audience.logic' option provided, got: `" .. tostring(logic) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
@@ -237,7 +240,7 @@ ShowMessage.GetMessageData = function(data)
         return "mandatory 'message.position' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if position ~= "top" and position ~= "left" and position ~= "center" then
-        return "mandatory 'message.position' string not valid type: '" .. position .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.position' string not valid option, got: `" .. tostring(position) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local fontSize, fontStyle = message.fontSize, message.fontStyle
@@ -245,13 +248,13 @@ ShowMessage.GetMessageData = function(data)
         return "mandatory 'message.fontSize' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontSize ~= "small" and fontSize ~= "medium" and fontSize ~= "large" then
-        return "mandatory 'message.fontSize' string not valid type: '" .. fontSize .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.fontSize' string not valid option, got: `" .. tostring(fontSize) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle == nil then
         return "mandatory 'message.fontStyle' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle ~= "regular" and fontStyle ~= "semibold" and fontStyle ~= "bold" then
-        return "mandatory 'message.fontStyle' string not valid type: '" .. fontStyle .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory 'message.fontStyle' string not valid option, got: `" .. tostring(fontStyle) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     local fontType = "muppet_label_text_" .. fontSize
     if fontStyle ~= "regular" then
@@ -263,7 +266,7 @@ ShowMessage.GetMessageData = function(data)
     if fontColorString ~= nil and fontColorString ~= "" then
         fontColor = Colors[fontColorString] --[[@as Color]]
         if fontColor == nil then
-            return "mandatory 'message.fontColor' string not valid type: '" .. fontColorString .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "mandatory 'message.fontColor' string not valid option, got: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
@@ -271,7 +274,7 @@ ShowMessage.GetMessageData = function(data)
     if message.maxWidth ~= nil and message.maxWidth ~= "" then
         maxWidth = tonumber(message.maxWidth) --[[@as uint]]
         if maxWidth == nil or maxWidth <= 0 then
-            return "optional 'message.maxWidth' is set, but not a positive number: '" .. fontColorString .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional 'message.maxWidth' is set, but not a positive number: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         maxWidth = math.floor(maxWidth) --[[@as uint]]
     end
@@ -295,18 +298,23 @@ ShowMessage.GetCloseData = function(data)
     if CloseTimeoutString ~= nil then
         local closeTimeout = tonumber(CloseTimeoutString)
         if closeTimeout == nil or closeTimeout <= 0 then
-            return "'close.timeout' specified, but not valid positive number: '" .. CloseTimeoutString .. "'" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "'close.timeout' specified, but not valid positive number, got: `" .. tostring(CloseTimeoutString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
-        closeTick = game.tick + (closeTimeout * 60)
+        closeTick = game.tick + (math.floor(closeTimeout) * 60)
     end
 
-    local closeButton = false
-    if close.xbutton ~= nil and close.xbutton == true then
-        closeButton = true
+    local closeButton
+    if close.xbutton ~= nil then
+        if type(close.xbutton) ~= "boolean" then
+            return "'close.xbutton' specified, but not a boolean or nil value, got: `" .. tostring(close.xbutton) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        end
+        closeButton = close.xbutton ---@cast closeButton - nil
+    else
+        closeButton = false
     end
 
     if closeTick == nil and closeButton == false then
-        return "no way to close GUI specified" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "no way to close GUI specified, either `timeout` or `xbutton` must be provided." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     return nil, closeTick, closeButton

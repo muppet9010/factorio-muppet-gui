@@ -1,5 +1,5 @@
 Now:
-    - check the input variables and tighten down on input types and values.
+
 
 
 Next:

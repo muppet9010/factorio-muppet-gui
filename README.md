@@ -40,7 +40,7 @@ The available options is given below in its object structure as JSON format. It 
 			--The style of the text. Valid options: "regular", "semibold", "bold"
 			"fontStyle": [FONT STYLE AS STRING]
 
-			--The color of the text. OPTIONAL. Valid options found in "utility/colors.lua" or at https://www.rapidtables.com/web/color/html-color-codes.html , i.e. "lightRed". Can be removed or blank string "" for the default of white.
+			--The color of the text. OPTIONAL. Valid options found in "utility/colors.lua" or at https://www.rapidtables.com/web/color/html-color-codes.html , i.e. "red". Can be removed or blank string "" for the default of white.
 			"fontColor": [COLOR NAME AS STRING]
 
 			--A single text string to show
