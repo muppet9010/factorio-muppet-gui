@@ -5,7 +5,6 @@ local Logging = require("utility/logging")
 local EventScheduler = require("utility/event-scheduler")
 local GUIActionsClick = require("utility/gui-actions-click")
 local Colors = require("utility/colors")
---local Utils = require("utility/utils")
 
 local errorMessageStart = "ERROR: command muppet_gui_show_message: "
 
@@ -16,7 +15,7 @@ ShowMessage.CreateGlobals = function()
 end
 
 ShowMessage.OnLoad = function()
-    Commands.Register("muppet_gui_show_message", {"api-description.muppet_gui_show_message"}, ShowMessage.CommandRun, true)
+    Commands.Register("muppet_gui_show_message", { "api-description.muppet_gui_show_message" }, ShowMessage.CommandRun, true)
     EventScheduler.RegisterScheduledEventType("ShowMessage.RemoveNamedElementForAll", ShowMessage.RemoveNamedElementForAll)
     GUIActionsClick.LinkGuiClickActionNameToFunction("ShowMessage.CloseSimpleTextFrame", ShowMessage.CloseSimpleTextFrame)
 end
@@ -55,19 +54,19 @@ ShowMessage.CommandRun = function(commandData)
                     direction = "horizontal",
                     style = "muppet_frame_content_marginTL",
                     storeName = "ShowMessage",
-                    styling = {maximal_width = maxWidth},
+                    styling = { maximal_width = maxWidth },
                     children = {
                         {
                             type = "label",
                             caption = simpleText,
                             style = fontType,
-                            styling = {font_color = fontColor}
+                            styling = { font_color = fontColor }
                         },
                         {
                             type = "flow",
                             direction = "horizontal",
                             style = "muppet_flow_horizontal_marginTL_paddingBR",
-                            styling = {horizontal_align = "right", horizontally_stretchable = true},
+                            styling = { horizontal_align = "right", horizontally_stretchable = true },
                             exclude = not closeButton,
                             children = {
                                 {
@@ -75,7 +74,7 @@ ShowMessage.CommandRun = function(commandData)
                                     type = "sprite-button",
                                     sprite = "utility/close_white",
                                     style = "muppet_sprite_button_frameCloseButtonClickable",
-                                    registerClick = {actionName = "ShowMessage.CloseSimpleTextFrame", data = {name = elementName, type = "frame"}}
+                                    registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = "frame" } }
                                 }
                             }
                         }
@@ -84,7 +83,7 @@ ShowMessage.CommandRun = function(commandData)
             )
         end
         if closeTick ~= nil then
-            EventScheduler.ScheduleEvent(closeTick, "ShowMessage.RemoveNamedElementForAll", global.showMessage.count, {name = elementName, type = "frame"})
+            EventScheduler.ScheduleEvent(closeTick, "ShowMessage.RemoveNamedElementForAll", global.showMessage.count, { name = elementName, type = "frame" })
         end
     end
 end
