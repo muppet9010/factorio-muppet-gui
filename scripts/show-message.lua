@@ -25,10 +25,12 @@ local Styles, Fonts = StyleData.MuppetStyles, StyleData.MuppetFonts
 ---@field fontColor string|nil # Color name in utility color list or blank/nil for default of white.
 ---@field simpleText string
 ---@field maxWidth uint|nil # nil doesn't set a limit on Gui element width.
+---@field background ShowMessage_Background|nil
 
 ---@class CloseDetails # Must have either `timeout` or `xbutton` populated.
 ---@field timeout uint|nil # If populated must be greater than 0. A nil value means don't auto close, a number greater than 0 is how many seconds before auto close.
 ---@field xbutton boolean|nil # If true then an x button is put on the GUI to close it.
+---@field xbuttonColor ShowMessage_CloseButtonColor|nil
 
 ---@class GuiToRemoveDetails
 ---@field name string
@@ -38,6 +40,8 @@ local Styles, Fonts = StyleData.MuppetStyles, StyleData.MuppetFonts
 ---@alias ShowMessage_Position "top"|"left"|"center"
 ---@alias ShowMessage_FontSize "small"|"medium"|"large"
 ---@alias ShowMessage_FontStyle "regular"|"semibold"|"bold"
+---@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"
+---@alias ShowMessage_CloseButtonColor "white"|"black"
 
 
 
@@ -100,12 +104,12 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
         return audienceErrorMessage
     end
 
-    local messageErrorMessage, simpleText, position, fontType, fontSize, fontColor, maxWidth = ShowMessage.GetMessageData(data)
+    local messageErrorMessage, simpleText, position, fontType, fontSize, fontColor, maxWidth, background = ShowMessage.GetMessageData(data)
     if messageErrorMessage ~= nil then
         return messageErrorMessage
     end
 
-    local closeErrorMessage, closeTick, closeButton = ShowMessage.GetCloseData(data, warningPrefix)
+    local closeErrorMessage, closeTick, closeButton, closeButtonColor = ShowMessage.GetCloseData(data, warningPrefix)
     if closeErrorMessage ~= nil then
         return closeErrorMessage
     end
@@ -117,6 +121,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
         -- Process the option specific stuff.
         ---@type table<uint, LuaPlayer>, table<string, any>
         local buttonPlayerList, closeButtonStyling
+        local closeButtonStyle, closeButtonSprite
         if closeButton then
             buttonPlayerList = {}
             global.showMessage.buttons[elementName] = buttonPlayerList
@@ -124,15 +129,35 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                 -- The GUI size for the text is too small for a full sized close button, so shrink it a bit to fit.
                 closeButtonStyling = { width = 12, height = 12 }
             end
+            if background == "transparent" or background == "contentInnerLight" then
+                closeButtonStyle = Styles.spriteButton.noBorderHover_clickable
+            else
+                closeButtonStyle = Styles.spriteButton.frameCloseButtonClickable
+            end
+            if closeButtonColor == "white" then
+                closeButtonSprite = "utility/close_white"
+            else
+                closeButtonSprite = "utility/close_black"
+            end
+        end
+        local outerContainerType, outerContainerSubType
+        if background == "transparent" then
+            -- Gets a flow object as we don't have a frame with no graphics style in the library.
+            outerContainerType = "flow"
+            outerContainerSubType = "horizontal"
+        else
+            -- All others get a standard Styles.
+            outerContainerType = "frame"
+            outerContainerSubType = background
         end
 
         -- Make the generic GUI details object.
         ---@type UtilityGuiUtil_ElementDetails_Add
         local guiElementDetails = {
             descriptiveName = elementName,
-            type = "frame",
+            type = outerContainerType,
             direction = "horizontal",
-            style = Styles.frame.content.marginTL,
+            style = Styles[outerContainerType][outerContainerSubType].marginTL,
             storeName = "ShowMessage",
             styling = { maximal_width = maxWidth },
             children = {
@@ -152,10 +177,10 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                         {
                             descriptiveName = elementName .. "_close",
                             type = "sprite-button",
-                            sprite = "utility/close_white",
-                            style = Styles.spriteButton.frameCloseButtonClickable,
+                            sprite = closeButtonSprite,
+                            style = closeButtonStyle,
                             styling = closeButtonStyling,
-                            registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = "frame" } --[[@as GuiToRemoveDetails]] }
+                            registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = outerContainerType } --[[@as GuiToRemoveDetails]] }
                         }
                     }
                 }
@@ -241,6 +266,7 @@ end
 ---@return ShowMessage_FontSize fontSize
 ---@return Color fontColor
 ---@return uint|nil maxWidth
+---@return ShowMessage_Background background
 ShowMessage.GetMessageData = function(data)
     local message = data.message
     if message == nil then
@@ -300,7 +326,16 @@ ShowMessage.GetMessageData = function(data)
         maxWidth = math.floor(maxWidth) --[[@as uint]]
     end
 
-    return nil, simpleText, position, fontType, fontSize, fontColor, maxWidth
+    local background = message.background
+    if background ~= nil then
+        if background ~= "main" and background ~= "contentInnerLight" and background ~= "transparent" then
+            return "mandatory 'message.background' string not valid option, got: `" .. tostring(background) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        end
+    else
+        background = "main"
+    end
+
+    return nil, simpleText, position, fontType, fontSize, fontColor, maxWidth, background
 end
 
 --- Work out the close details from the raw data.
@@ -309,6 +344,7 @@ end
 ---@return string|nil errorMessage
 ---@return uint|nil closeTick
 ---@return boolean closeButton
+---@return ShowMessage_CloseButtonColor|nil closeButtonType
 ShowMessage.GetCloseData = function(data, warningPrefix)
     local close = data.close
     if close == nil then
@@ -343,7 +379,16 @@ ShowMessage.GetCloseData = function(data, warningPrefix)
         return "no way to close GUI specified, either `timeout` or `xbutton` must be provided." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
-    return nil, closeTick, closeButton
+    local closeButtonColor = close.xbuttonColor
+    if closeButtonColor ~= nil then
+        if closeButtonColor ~= "white" and closeButtonColor ~= "black" then
+            return "mandatory 'close.xbuttonColor' string not valid option, got: `" .. tostring(closeButtonColor) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        end
+    else
+        closeButtonColor = "white"
+    end
+
+    return nil, closeTick, closeButton, closeButtonColor
 end
 
 --- Called to remove all instances of a specific GUI for all players after a set time period.

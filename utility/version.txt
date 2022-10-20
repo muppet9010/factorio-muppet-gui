@@ -7,3 +7,4 @@ Hotfixes
 ---------
 
 - manager-libraries\gui-util.lua: GuiUtil.AddElement() - `descriptiveName` should be optional, but was mandatory. Updated checks for features that use it also. Seems to be missed stuff from mass GUI library updates in the past.
+- lists\style-data.lua: StyleData.GeneratePrototypes() - added `_noBorderHover` graphics variant to Sprite Button type.
