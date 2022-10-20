@@ -22,7 +22,7 @@ The available options are listed below.
 | message | position | mandatory | string | Position on the screen. Valid values `top`, `left` and `center`. Will be added to the end of any other mod GUIs in that position on the screen. |
 | message | fontSize | mandatory | string | The size of the text. Valid values: `small`, `medium`, `large` |
 | message | fontStyle | mandatory | string | The style of the text. Valid values: `regular`, `semibold`, `bold` |
-| message | fontColor | optional | string | The color of the text. Valid values found in `utility/colors.lua` or at `https://www.rapidtables.com/web/color/html-color-codes.html` , i.e. `red`. Can be removed or be nil for the default of white. |
+| message | fontColor | optional | string | The color of the text. Valid values found in `utility\lists\colors.lua` or at `https://www.rapidtables.com/web/color/html-color-codes.html` , i.e. `red`. Can be removed or be nil for the default of white. |
 | message | simpleText | mandatory | string | The text to be shown in the message. |
 | message | maxWidth | optional | uint | Max width of the message box in pixels. Suggested minimum value is 200 and a large width is 1000. Text will wrap on to multiple lines automatically within the set width. Exclude the option or set to nil if no max width is desired. |
 | message | background | optional | string | The background type of the GUI. Either `main`, `contentInnerLight` or `transparent`. Defaults to `main`.
@@ -57,11 +57,15 @@ The [OPTIONS TABLE] in the remote interface syntax is the above Options object a
 
 An auto closing GUI for all connected players, shown at the top of the screen:
 
-`/sc remote.call("muppet_gui", "show_message", { audience={players=nil, logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
 
 A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
 
 `/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="center", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
+
+Black text and close button on a transparent background:
+
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="some black text", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent"} , close={xbutton=true, xbuttonColor="black"} })`
 
 -------------------------------------------------
 
@@ -79,8 +83,12 @@ While JSON doesn't define `nil` or `null`, Factorio JSON does recognise `null` a
 
 An auto closing GUI for all connected players, shown at the top of the screen:
 
-`/muppet_gui_show_message {"audience": {"players":null, "logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5}}`
+`/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5}}`
 
 A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
 
-`/muppet_gui_show_message {"audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"center", "fontSize":"small", "fontStyle":"bold", "fontColor":"white"}, "close":{"xbutton":true}}`
+`/muppet_gui_show_message {"audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"center", "fontSize":"small", "fontStyle":"bold"}, "close":{"xbutton":true}}`
+
+Black text and close button on a transparent background:
+
+`/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"some black text", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent"}, "close":{"xbutton":true, "xbuttonColor":"black"}}`
