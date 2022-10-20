@@ -6,6 +6,8 @@ local EventScheduler = require("utility.manager-libraries.event-scheduler")
 local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
 local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
+local StyleData = require("utility.lists.style-data")
+local Styles, Fonts = StyleData.MuppetStyles, StyleData.MuppetFonts
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -98,7 +100,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
         return audienceErrorMessage
     end
 
-    local messageErrorMessage, simpleText, position, fontType, fontColor, maxWidth = ShowMessage.GetMessageData(data)
+    local messageErrorMessage, simpleText, position, fontType, fontSize, fontColor, maxWidth = ShowMessage.GetMessageData(data)
     if messageErrorMessage ~= nil then
         return messageErrorMessage
     end
@@ -112,52 +114,64 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
         global.showMessage.count = global.showMessage.count + 1
         local elementName = "muppet_gui_show_message" .. global.showMessage.count
 
-        local buttonPlayerList ---@type table<uint, LuaPlayer>
+        -- Process the option specific stuff.
+        ---@type table<uint, LuaPlayer>, table<string, any>
+        local buttonPlayerList, closeButtonStyling
         if closeButton then
             buttonPlayerList = {}
             global.showMessage.buttons[elementName] = buttonPlayerList
+            if fontSize == "small" then
+                -- The GUI size for the text is too small for a full sized close button, so shrink it a bit to fit.
+                closeButtonStyling = { width = 12, height = 12 }
+            end
         end
 
-        for _, player in pairs(players) do
-            GUIUtil.AddElement(
+        -- Make the generic GUI details object.
+        ---@type UtilityGuiUtil_ElementDetails_Add
+        local guiElementDetails = {
+            descriptiveName = elementName,
+            type = "frame",
+            direction = "horizontal",
+            style = Styles.frame.content.marginTL,
+            storeName = "ShowMessage",
+            styling = { maximal_width = maxWidth },
+            children = {
                 {
-                    parent = player.gui[position],
-                    descriptiveName = elementName,
-                    type = "frame",
+                    type = "label",
+                    caption = simpleText,
+                    style = fontType,
+                    styling = { font_color = fontColor }
+                },
+                {
+                    type = "flow",
                     direction = "horizontal",
-                    style = "muppet_frame_content_marginTL",
-                    storeName = "ShowMessage",
-                    styling = { maximal_width = maxWidth },
+                    style = Styles.flow.horizontal.marginTL_paddingBR,
+                    styling = { horizontal_align = "right", horizontally_stretchable = true },
+                    exclude = not closeButton,
                     children = {
                         {
-                            type = "label",
-                            caption = simpleText,
-                            style = fontType,
-                            styling = { font_color = fontColor }
-                        },
-                        {
-                            type = "flow",
-                            direction = "horizontal",
-                            style = "muppet_flow_horizontal_marginTL_paddingBR",
-                            styling = { horizontal_align = "right", horizontally_stretchable = true },
-                            exclude = not closeButton,
-                            children = {
-                                {
-                                    descriptiveName = elementName .. "_close",
-                                    type = "sprite-button",
-                                    sprite = "utility/close_white",
-                                    style = "muppet_sprite_button_frameCloseButtonClickable",
-                                    registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = "frame" } --[[@as GuiToRemoveDetails]] }
-                                }
-                            }
+                            descriptiveName = elementName .. "_close",
+                            type = "sprite-button",
+                            sprite = "utility/close_white",
+                            style = Styles.spriteButton.frameCloseButtonClickable,
+                            styling = closeButtonStyling,
+                            registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = "frame" } --[[@as GuiToRemoveDetails]] }
                         }
                     }
                 }
-            )
+            }
+        }
+
+        -- Add the GUI to each player.
+        for _, player in pairs(players) do
+            guiElementDetails.parent = player.gui[position]
+            GUIUtil.AddElement(guiElementDetails)
             if closeButton then
                 buttonPlayerList[player.index] = player
             end
         end
+
+        -- Log the timeout close of the GUI if enabled.
         if closeTick ~= nil then
             EventScheduler.ScheduleEventOnce(closeTick, "ShowMessage.RemoveNamedElementForAll", global.showMessage.count, { name = elementName, type = "frame" }--[[@as GuiToRemoveDetails]] )
         end
@@ -224,6 +238,7 @@ end
 ---@return string simpleText
 ---@return ShowMessage_Position position
 ---@return ShowMessage_FontStyle fontType
+---@return ShowMessage_FontSize fontSize
 ---@return Color fontColor
 ---@return uint|nil maxWidth
 ShowMessage.GetMessageData = function(data)
@@ -260,9 +275,11 @@ ShowMessage.GetMessageData = function(data)
     if fontStyle ~= "regular" and fontStyle ~= "semibold" and fontStyle ~= "bold" then
         return "mandatory 'message.fontStyle' string not valid option, got: `" .. tostring(fontStyle) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
-    local fontType = "muppet_label_text_" .. fontSize
-    if fontStyle ~= "regular" then
-        fontType = fontType .. "_" .. fontStyle
+    local fontType
+    if fontStyle == "regular" then
+        fontType = Styles.label.text[fontSize].plain
+    else
+        fontType = Styles.label.text[fontSize][fontStyle]
     end
 
     local fontColorString = message.fontColor
@@ -283,7 +300,7 @@ ShowMessage.GetMessageData = function(data)
         maxWidth = math.floor(maxWidth) --[[@as uint]]
     end
 
-    return nil, simpleText, position, fontType, fontColor, maxWidth
+    return nil, simpleText, position, fontType, fontSize, fontColor, maxWidth
 end
 
 --- Work out the close details from the raw data.
