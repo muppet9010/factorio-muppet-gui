@@ -3,7 +3,7 @@ Version: 20.0.4
 Date: 2020-10-XXXXX
   Features:
     - Added remote interface to add Gui text in addition to the Factorio command.
-    - Added optional transparent or contentInnerLight background option. Defaults to main Factorio grey color. The `contentInnerLight` is a light grey color used in some Factorio GUIs.
+    - Added optional `transparent`, `contentInnerLight`, `brightRed`, `brightGreen` and `brightYellow` background option. Defaults to main Factorio grey color.
     - Added optional close button color option to be either white or black. Defaults to white.
   Changes:
     - Custom colors renamed to be camel cased; only colors affected are `lightred` to `lightRed`, and `guiHeadingColor` to `guiHeadingColor`. The standard color names in the list remain all lower cased as they were before. `lightred` was in example text in readme previously.

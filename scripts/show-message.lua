@@ -7,7 +7,7 @@ local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
 local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
 local StyleData = require("utility.lists.style-data")
-local Styles = StyleData.MuppetStyles -- TODO: this should really be MuppetStyles.
+local MuppetStyles = StyleData.MuppetStyles
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -152,7 +152,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
             descriptiveName = elementName,
             type = outerContainerType,
             direction = "horizontal",
-            style = Styles[outerContainerType][outerContainerSubType].marginTL,
+            style = MuppetStyles[outerContainerType][outerContainerSubType].marginTL,
             storeName = "ShowMessage",
             styling = { maximal_width = maxWidth },
             children = {
@@ -165,7 +165,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                 {
                     type = "flow",
                     direction = "horizontal",
-                    style = Styles.flow.horizontal.marginTL_paddingBR,
+                    style = MuppetStyles.flow.horizontal.marginTL_paddingBR,
                     styling = { horizontal_align = "right", horizontally_stretchable = true },
                     exclude = not closeButton,
                     children = {
@@ -173,7 +173,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                             descriptiveName = elementName .. "_close",
                             type = "sprite-button",
                             sprite = closeButtonSprite,
-                            style = Styles.spriteButton.noBorderHover_clickable, -- Means we never have a depressed graphic, but that doesn't matter as its having the hover that people will notice.
+                            style = MuppetStyles.spriteButton.noBorderHover_clickable, -- Means we never have a depressed graphic, but that doesn't matter as its having the hover that people will notice.
                             styling = closeButtonStyling,
                             registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = outerContainerType } --[[@as GuiToRemoveDetails]] }
                         }
@@ -298,9 +298,9 @@ ShowMessage.GetMessageData = function(data)
     end
     local fontType
     if fontStyle == "regular" then
-        fontType = Styles.label.text[fontSize].plain
+        fontType = MuppetStyles.label.text[fontSize].plain
     else
-        fontType = Styles.label.text[fontSize][fontStyle]
+        fontType = MuppetStyles.label.text[fontSize][fontStyle]
     end
 
     local fontColorString = message.fontColor
