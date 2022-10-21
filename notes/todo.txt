@@ -3,9 +3,9 @@ Now:
 
 
 Next:
-	- for the center position is it possible to have "above center", that forces some empty gap to the bottom of the element so its somewhat up from the center. So it doesn't block whatever is in the middle of the screen. May need to take the offset on the command as streamers have some control based on their message usage etc? Note it will leave the gaps if multiple texts are present at a time. Use `bottom_margin` and probably do it as a percent of screen height above/below center ?
 	- Add timer to the text display mod so it can be used with time limited abilities via rcon on screen nicely. Support counting up/down and min/max values.
     - look at way via remote interfaces that existing text's can be removed by a name. For use with scripting chat integrations, i.e. add a countdown that is then removed when the player dies. Will need to avoid duplicate entries being created with the same name.
+
 
 
 Future:

@@ -19,7 +19,7 @@ The available options are listed below.
 | --- | --- | --- | --- | --- |
 | audience | logic | mandatory | string | The logic to be applied with the `players` option to define which connected players see the message. Valid values `only`, `not` and `all`. |
 | audience | players | special | string[] | An array of players to have the logic applied to. If the `logic` option is `only` or `not` then the `players` list is mandatory. If the `logic` option is `all` then the `players` list will be ignored and can be either not provided or be `nil`. |
-| message | position | mandatory | string | Position on the screen. Valid values `top`, `left` and `center`. Will be added to the end of any other mod GUIs in that position on the screen. |
+| message | position | mandatory | string | Position on the screen. Valid values `top`, `left`, `center`, `aboveCenter`, `belowCenter`. See Notes for details. |
 | message | fontSize | mandatory | string | The size of the text. Valid values: `small`, `medium`, `large` |
 | message | fontStyle | mandatory | string | The style of the text. Valid values: `regular`, `semibold`, `bold` |
 | message | fontColor | optional | string | The color of the text. See notes for valid list of color options. If not provided or `nil` the default of `white` is used. |
@@ -41,6 +41,7 @@ They are defined to the command/remote call as an object of `Option Group` field
 
 #### Notes
 
+- `position` options are all relative and will be added to the end of any GUIs in that position on the screen. `top` is along the top of the screen, left to right. `left` is along the left edge of the screen, top to bottom. `center` is in the very center middle of the screen (horizontally and vertically), multiple GUIs expand horizontally. `aboveCenter` is about 1/3 down from the top middle of the screen, multiple GUIs expand horizontally. `belowCenter` is about 1/3 up from the bottom middle of the screen, multiple GUIs expand horizontally. If other mods add GUIs to the center of the screen then these will stack horizontally to this mod's 3 center position message GUIs.
 - `fontColor` options can be found either in the mod files at `utility\lists\colors.lua` or at the website `https://www.rapidtables.com/web/color/html-color-codes.html`. The option defaults to the value of `white`.
 - `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color 9see through). `brightRed`, `brightGreen` and `brightYellow` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
 - The various choices in the GUI are often limited by what graphics Vanilla Factorio includes. If there's something specific you'd like added raise it in the discussion section and I can check if there is already a graphic for it.
@@ -65,9 +66,13 @@ A GUi with a close X button for all connected players not specifically excluded,
 
 `/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="center", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
 
-Black text and close button on a transparent background:
+Black text and close button on a transparent background at the center of the screen:
 
 `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="some black text", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent"} , close={xbutton=true, xbuttonColor="black"} })`
+
+A bright green background box with black test that auto closes above the center of the screen:
+
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
 
 -------------------------------------------------
 
@@ -91,6 +96,10 @@ A GUi with a close X button for all connected players not specifically excluded,
 
 `/muppet_gui_show_message {"audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"center", "fontSize":"small", "fontStyle":"bold"}, "close":{"xbutton":true}}`
 
-Black text and close button on a transparent background:
+Black text and close button on a transparent background at the center of the screen:
 
 `/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"some black text", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent"}, "close":{"xbutton":true, "xbuttonColor":"black"}}`
+
+A bright green background box with black test that auto closes above the center of the screen:
+
+`/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10}}`

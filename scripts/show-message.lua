@@ -8,7 +8,7 @@ local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
 local StyleData = require("utility.lists.style-data")
 local MuppetStyles = StyleData.MuppetStyles
-local TableUtils = require("utility.helper-utils.table-utils")
+--local TableUtils = require("utility.helper-utils.table-utils") -- TODO: position tests
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -38,7 +38,7 @@ local TableUtils = require("utility.helper-utils.table-utils")
 ---@field type string
 
 ---@alias ShowMessage_Logic "only"|"not"|"all"
----@alias ShowMessage_Position "top"|"left"|"center"
+---@alias ShowMessage_Position "top"|"left"|"center"|"aboveCenter"|"belowCenter"
 ---@alias ShowMessage_FontSize "small"|"medium"|"large"
 ---@alias ShowMessage_FontStyle "regular"|"semibold"|"bold"
 ---@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"|"brightGreen"|"brightRed"|
@@ -185,60 +185,108 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
 
         -- Add the GUI to each player.
         for _, player in pairs(players) do
-            local flowElements = GUIUtil.AddElement({
-                parent = player.gui.center,
-                type = "flow",
-                direction = "vertical",
-                style = MuppetStyles.flow.vertical.plain,
-                styling = { vertically_stretchable = true, vertical_align = "center" },
-                children = {
-                    {
-                        descriptiveName = "centerTop",
-                        type = "flow",
-                        direction = "horizontal",
-                        style = MuppetStyles.flow.horizontal.plain,
-                        styling = { vertical_align = "top" },
-                        returnElement = true
-                    },
-                    {
-                        descriptiveName = "centerMiddle",
-                        type = "flow",
-                        direction = "horizontal",
-                        style = MuppetStyles.flow.horizontal.plain,
-                        styling = { vertical_align = "center", height = player.display_resolution.height / 3 },
-                        returnElement = true
-                    },
-                    {
-                        descriptiveName = "centerBottom",
-                        type = "flow",
-                        direction = "horizontal",
-                        style = MuppetStyles.flow.horizontal.plain,
-                        styling = { vertical_align = "bottom" },
-                        returnElement = true
-                    },
-                }
-            }) ---@cast flowElements - nil
+            local player_index = player.index
+            local parentGui ---@type LuaGuiElement
 
-            local topEntry = TableUtils.DeepCopy(guiElementDetails)
-            local bottomEntry = TableUtils.DeepCopy(guiElementDetails)
+            -- Do any parent flow setup to add our message too.
+            if position == "center" or position == "aboveCenter" or position == "belowCenter" then
+                -- If its a center GUI ensure special position flows are present.
 
-            topEntry.parent = flowElements["muppet_gui-centerTop-flow"]
-            topEntry.descriptiveName = topEntry.descriptiveName .. "_top"
-            topEntry.children[1].caption = "top"
-            GUIUtil.AddElement(topEntry)
+                -- Get the vertically positioned flows or create them if needed.
+                local aboveCenterFlow = GUIUtil.GetElementFromPlayersReferenceStorage(player_index, "ShowMessage", "aboveCenter", "flow")
+                local centerFlow, belowCenterFlow
+                if aboveCenterFlow == nil or not aboveCenterFlow.valid then
+                    -- Either never had the center flows made yet, or another mod has destroyed them under us.
+                    local flowElements = GUIUtil.AddElement({
+                        parent = player.gui.center,
+                        type = "flow",
+                        direction = "vertical",
+                        style = MuppetStyles.flow.vertical.plain,
+                        styling = { vertically_stretchable = true, vertical_align = "center" },
+                        children = {
+                            {
+                                descriptiveName = "aboveCenter",
+                                type = "flow",
+                                storeName = "ShowMessage",
+                                returnElement = true,
+                                direction = "horizontal",
+                                style = MuppetStyles.flow.horizontal.plain,
+                                styling = { vertical_align = "top" }
+                            },
+                            {
+                                descriptiveName = "center",
+                                type = "flow",
+                                storeName = "ShowMessage",
+                                returnElement = true,
+                                direction = "horizontal",
+                                style = MuppetStyles.flow.horizontal.plain,
+                                styling = { vertical_align = "center", height = player.display_resolution.height / 3 }
+                            },
+                            {
+                                descriptiveName = "belowCenter",
+                                type = "flow",
+                                storeName = "ShowMessage",
+                                returnElement = true,
+                                direction = "horizontal",
+                                style = MuppetStyles.flow.horizontal.plain,
+                                styling = { vertical_align = "bottom" }
+                            },
+                        }
+                    }) ---@cast flowElements - nil
+                    aboveCenterFlow = flowElements["muppet_gui-aboveCenter-flow"]
+                    centerFlow = flowElements["muppet_gui-center-flow"]
+                    belowCenterFlow = flowElements["muppet_gui-belowCenter-flow"]
+                else
+                    centerFlow = GUIUtil.GetElementFromPlayersReferenceStorage(player_index, "ShowMessage", "center", "flow")
+                    belowCenterFlow = GUIUtil.GetElementFromPlayersReferenceStorage(player_index, "ShowMessage", "belowCenter", "flow")
+                    centerFlow.style.height = player.display_resolution.height / 3 -- Update the height each time as a way to handle screen resolution changes over time. We don't want to bother reacting to the event.
+                end
 
-            guiElementDetails.parent = flowElements["muppet_gui-centerMiddle-flow"]
-            guiElementDetails.descriptiveName = guiElementDetails.descriptiveName .. "_middle"
-            guiElementDetails.children[1].caption = "middle"
+
+
+                -- TODO - Position Testing - START
+                --[[local topEntry = TableUtils.DeepCopy(guiElementDetails)
+                local bottomEntry = TableUtils.DeepCopy(guiElementDetails)
+
+                topEntry.parent = aboveCenterFlow
+                topEntry.descriptiveName = topEntry.descriptiveName .. "_top"
+                topEntry.children[1].caption = "top"
+                GUIUtil.AddElement(topEntry)
+
+                guiElementDetails.parent = centerFlow
+                guiElementDetails.descriptiveName = guiElementDetails.descriptiveName .. "_center"
+                guiElementDetails.children[1].caption = "center"
+                GUIUtil.AddElement(guiElementDetails)
+
+                bottomEntry.parent = belowCenterFlow
+                bottomEntry.descriptiveName = bottomEntry.descriptiveName .. "_bottom"
+                bottomEntry.children[1].caption = "bottom"
+                GUIUtil.AddElement(bottomEntry)]]
+                -- TODO - Position Testing - START
+
+
+
+                -- Record the custom center parent GUI for adding to normally.
+                if position == "aboveCenter" then
+                    parentGui = aboveCenterFlow
+                elseif position == "center" then
+                    parentGui = centerFlow
+                else
+                    parentGui = belowCenterFlow
+                end
+            elseif position == "top" or position == "left" then
+                parentGui = player.gui[position] --[[@as LuaGuiElement]]
+            end
+
+            -- Add the message GUI to the player.
+            ----[[ TODO: real code to be disabled in Position Testing.
+            guiElementDetails.parent = parentGui
             GUIUtil.AddElement(guiElementDetails)
+            --]]
 
-            bottomEntry.parent = flowElements["muppet_gui-centerBottom-flow"]
-            bottomEntry.descriptiveName = bottomEntry.descriptiveName .. "_bottom"
-            bottomEntry.children[1].caption = "bottom"
-            GUIUtil.AddElement(bottomEntry)
-
+            -- Record the close button having been added for this player to the global list of buttons for this message.
             if closeButton then
-                buttonPlayerList[player.index] = player
+                buttonPlayerList[player_index] = player
             end
         end
 
@@ -330,7 +378,7 @@ ShowMessage.GetMessageData = function(data)
     if position == nil then
         return "mandatory 'message.position' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
-    if position ~= "top" and position ~= "left" and position ~= "center" then
+    if position ~= "top" and position ~= "left" and position ~= "center" and position ~= "aboveCenter" and position ~= "belowCenter" then
         return "mandatory 'message.position' string not valid option, got: `" .. tostring(position) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 

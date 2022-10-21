@@ -5,6 +5,7 @@ Date: 2020-10-XXXXX
     - Added remote interface to add Gui text in addition to the Factorio command.
     - Added optional `transparent`, `contentInnerLight`, `brightRed`, `brightGreen` and `brightYellow` background option. Defaults to main Factorio grey color.
     - Added optional close button color option to be either white or black. Defaults to white.
+    - Added `aboveCenter` and `belowCenter` values for the `position` option. These are offsets from the center of the screen by about 1/3 screen height.
   Changes:
     - Custom colors renamed to be camel cased; only colors affected are `lightred` to `lightRed`, and `guiHeadingColor` to `guiHeadingColor`. The standard color names in the list remain all lower cased as they were before. `lightred` was in example text in readme previously.
     - Small text gets a smaller x close button so the GUI background isn't expanded just for it.
