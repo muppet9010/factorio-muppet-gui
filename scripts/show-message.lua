@@ -8,6 +8,7 @@ local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
 local StyleData = require("utility.lists.style-data")
 local MuppetStyles = StyleData.MuppetStyles
+local TableUtils = require("utility.helper-utils.table-utils")
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -184,8 +185,58 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
 
         -- Add the GUI to each player.
         for _, player in pairs(players) do
-            guiElementDetails.parent = player.gui[position]
+            local flowElements = GUIUtil.AddElement({
+                parent = player.gui.center,
+                type = "flow",
+                direction = "vertical",
+                style = MuppetStyles.flow.vertical.plain,
+                styling = { vertically_stretchable = true, vertical_align = "center" },
+                children = {
+                    {
+                        descriptiveName = "centerTop",
+                        type = "flow",
+                        direction = "horizontal",
+                        style = MuppetStyles.flow.horizontal.plain,
+                        styling = { vertical_align = "top" },
+                        returnElement = true
+                    },
+                    {
+                        descriptiveName = "centerMiddle",
+                        type = "flow",
+                        direction = "horizontal",
+                        style = MuppetStyles.flow.horizontal.plain,
+                        styling = { vertical_align = "center", height = player.display_resolution.height / 3 },
+                        returnElement = true
+                    },
+                    {
+                        descriptiveName = "centerBottom",
+                        type = "flow",
+                        direction = "horizontal",
+                        style = MuppetStyles.flow.horizontal.plain,
+                        styling = { vertical_align = "bottom" },
+                        returnElement = true
+                    },
+                }
+            }) ---@cast flowElements - nil
+
+            local topEntry = TableUtils.DeepCopy(guiElementDetails)
+            local bottomEntry = TableUtils.DeepCopy(guiElementDetails)
+
+            topEntry.parent = flowElements["muppet_gui-centerTop-flow"]
+            topEntry.descriptiveName = topEntry.descriptiveName .. "_top"
+            topEntry.children[1].caption = "top"
+            GUIUtil.AddElement(topEntry)
+
+            guiElementDetails.parent = flowElements["muppet_gui-centerMiddle-flow"]
+            guiElementDetails.descriptiveName = guiElementDetails.descriptiveName .. "_middle"
+            guiElementDetails.children[1].caption = "middle"
             GUIUtil.AddElement(guiElementDetails)
+
+            bottomEntry.parent = flowElements["muppet_gui-centerBottom-flow"]
+            bottomEntry.descriptiveName = bottomEntry.descriptiveName .. "_bottom"
+            bottomEntry.children[1].caption = "bottom"
+            GUIUtil.AddElement(bottomEntry)
+
             if closeButton then
                 buttonPlayerList[player.index] = player
             end
