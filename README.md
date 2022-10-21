@@ -18,14 +18,14 @@ The available options are listed below.
 | Option Group | Option Name | Mandatory | Value Type | Details |
 | --- | --- | --- | --- | --- |
 | audience | logic | mandatory | string | The logic to be applied with the `players` option to define which connected players see the message. Valid values `only`, `not` and `all`. |
-| audience | players | special | string[] | An array of players to have the logic applied to. If the `logic` option is `only` or `not` then the `players` list is mandatory. If the `logic` option is `all` then the `players` list will be ignored and can be removed or be be nil. |
+| audience | players | special | string[] | An array of players to have the logic applied to. If the `logic` option is `only` or `not` then the `players` list is mandatory. If the `logic` option is `all` then the `players` list will be ignored and can be either not provided or be `nil`. |
 | message | position | mandatory | string | Position on the screen. Valid values `top`, `left` and `center`. Will be added to the end of any other mod GUIs in that position on the screen. |
 | message | fontSize | mandatory | string | The size of the text. Valid values: `small`, `medium`, `large` |
 | message | fontStyle | mandatory | string | The style of the text. Valid values: `regular`, `semibold`, `bold` |
-| message | fontColor | optional | string | The color of the text. Valid values found in `utility\lists\colors.lua` or at `https://www.rapidtables.com/web/color/html-color-codes.html` , i.e. `red`. Can be removed or be nil for the default of white. |
+| message | fontColor | optional | string | The color of the text. See notes for valid list of color options. If not provided or `nil` the default of `white` is used. |
 | message | simpleText | mandatory | string | The text to be shown in the message. |
-| message | maxWidth | optional | uint | Max width of the message box in pixels. Suggested minimum value is 200 and a large width is 1000. Text will wrap on to multiple lines automatically within the set width. Exclude the option or set to nil if no max width is desired. |
-| message | background | optional | string | The background type of the GUI. Either `main`, `contentInnerLight` or `transparent`. Defaults to `main`.
+| message | maxWidth | optional | uint | Max width of the message box in pixels. Suggested minimum value is 200 and a large width of 1000. Text will wrap on to multiple lines automatically within the set width. Don't provide the option or set to nil if no max width is desired. Default is no max width and this works fine with shorter messages. |
+| message | background | optional | string | The background type of the GUI. Either `main`, `contentInnerLight`, `transparent`, `brightRed`, `brightGreen`, `brightYellow`. Defaults to `main`.
 | close | timeout | special | uint | Either `timeout` or `xbutton` must be specified. If Timeout is provided and greater than 0 the message will auto close after this number of seconds. |
 | close | xbutton | special | boolean | Either `timeout` or `xbutton` must be specified. If XButton is enabled (true) then a close X button will be shown on the top right of the GUI message. |
 | close | xbuttonColor | optional | string | The color of the close button if its enabled. Either `white` or `black`. Defaults to `white`. |
@@ -41,7 +41,8 @@ They are defined to the command/remote call as an object of `Option Group` field
 
 #### Notes
 
-- `background` options are: `main` is the default Factorio grey color used in Factorio GUI borders. `contentInnerLight` is the light grey content backgrounds used in some Factorio GUIs. `transparent` is no background color.
+- `fontColor` options can be found either in the mod files at `utility\lists\colors.lua` or at the website `https://www.rapidtables.com/web/color/html-color-codes.html`. The option defaults to the value of `white`.
+- `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color 9see through). `brightRed`, `brightGreen` and `brightYellow` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
 
 -------------------------------------------------
 

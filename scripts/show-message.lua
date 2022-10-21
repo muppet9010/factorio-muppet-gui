@@ -7,7 +7,7 @@ local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
 local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
 local StyleData = require("utility.lists.style-data")
-local Styles, Fonts = StyleData.MuppetStyles, StyleData.MuppetFonts
+local Styles = StyleData.MuppetStyles -- TODO: this should really be MuppetStyles.
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -40,7 +40,7 @@ local Styles, Fonts = StyleData.MuppetStyles, StyleData.MuppetFonts
 ---@alias ShowMessage_Position "top"|"left"|"center"
 ---@alias ShowMessage_FontSize "small"|"medium"|"large"
 ---@alias ShowMessage_FontStyle "regular"|"semibold"|"bold"
----@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"
+---@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"|"brightGreen"|"brightRed"|
 ---@alias ShowMessage_CloseButtonColor "white"|"black"
 
 
@@ -121,18 +121,13 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
         -- Process the option specific stuff.
         ---@type table<uint, LuaPlayer>, table<string, any>
         local buttonPlayerList, closeButtonStyling
-        local closeButtonStyle, closeButtonSprite
+        local closeButtonSprite
         if closeButton then
             buttonPlayerList = {}
             global.showMessage.buttons[elementName] = buttonPlayerList
             if fontSize == "small" then
                 -- The GUI size for the text is too small for a full sized close button, so shrink it a bit to fit.
                 closeButtonStyling = { width = 12, height = 12 }
-            end
-            if background == "transparent" or background == "contentInnerLight" then
-                closeButtonStyle = Styles.spriteButton.noBorderHover_clickable
-            else
-                closeButtonStyle = Styles.spriteButton.frameCloseButtonClickable
             end
             if closeButtonColor == "white" then
                 closeButtonSprite = "utility/close_white"
@@ -146,7 +141,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
             outerContainerType = "flow"
             outerContainerSubType = "horizontal"
         else
-            -- All others get a standard Styles.
+            -- All others get a standard frame.
             outerContainerType = "frame"
             outerContainerSubType = background
         end
@@ -178,7 +173,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                             descriptiveName = elementName .. "_close",
                             type = "sprite-button",
                             sprite = closeButtonSprite,
-                            style = closeButtonStyle,
+                            style = Styles.spriteButton.noBorderHover_clickable, -- Means we never have a depressed graphic, but that doesn't matter as its having the hover that people will notice.
                             styling = closeButtonStyling,
                             registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = outerContainerType } --[[@as GuiToRemoveDetails]] }
                         }
@@ -328,7 +323,7 @@ ShowMessage.GetMessageData = function(data)
 
     local background = message.background
     if background ~= nil then
-        if background ~= "main" and background ~= "contentInnerLight" and background ~= "transparent" then
+        if background ~= "main" and background ~= "contentInnerLight" and background ~= "transparent" and background ~= "brightGreen" and background ~= "brightRed" then
             return "mandatory 'message.background' string not valid option, got: `" .. tostring(background) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     else

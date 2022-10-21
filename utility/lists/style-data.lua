@@ -107,7 +107,16 @@ StyleData.GeneratePrototypes = function()
             { "_contentInnerDark_shadowRisen", { base = { position = { 34, 0 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
             { "_contentInnerLight", { base = { position = { 0, 17 }, corner_size = 8 } }, 0, 0 },
             { "_contentInnerLight_shadowSunken", { base = { position = { 0, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
-            { "_contentInnerLight_shadowRisen", { base = { position = { 0, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 }
+            { "_contentInnerLight_shadowRisen", { base = { position = { 0, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
+            { "_brightGreen", { base = { position = { 102, 17 }, corner_size = 8 } }, 0, 0 },
+            { "_brightGreen_shadowSunken", { base = { position = { 102, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
+            { "_brightGreen_shadowRisen", { base = { position = { 102, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
+            { "_brightRed", { base = { position = { 136, 17 }, corner_size = 8 } }, 0, 0 },
+            { "_brightRed_shadowSunken", { base = { position = { 136, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
+            { "_brightRed_shadowRisen", { base = { position = { 136, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
+            { "_brightYellow", { base = { position = { 34, 17 }, corner_size = 8 } }, 0, 0 },
+            { "_brightYellow_shadowSunken", { base = { position = { 34, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
+            { "_brightYellow_shadowRisen", { base = { position = { 34, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
         }
     ) do
         local graphicEmmyLuaName = string.sub(graphic[1], 2)
@@ -532,6 +541,60 @@ StyleData.MuppetStyles = {
             ["paddingBR"] = "muppet_frame_contentInnerLight_shadowRisen_paddingBR",
             ["marginTL"] = "muppet_frame_contentInnerLight_shadowRisen_marginTL",
             ["marginTL_paddingBR"] = "muppet_frame_contentInnerLight_shadowRisen_marginTL_paddingBR",
+        },
+        brightGreen = {
+            ["plain"] = "muppet_frame_brightGreen",
+            ["paddingBR"] = "muppet_frame_brightGreen_paddingBR",
+            ["marginTL"] = "muppet_frame_brightGreen_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightGreen_marginTL_paddingBR",
+        },
+        brightGreen_shadowSunken = {
+            ["plain"] = "muppet_frame_brightGreen_shadowSunken",
+            ["paddingBR"] = "muppet_frame_brightGreen_shadowSunken_paddingBR",
+            ["marginTL"] = "muppet_frame_brightGreen_shadowSunken_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightGreen_shadowSunken_marginTL_paddingBR",
+        },
+        brightGreen_shadowRisen = {
+            ["plain"] = "muppet_frame_brightGreen_shadowRisen",
+            ["paddingBR"] = "muppet_frame_brightGreen_shadowRisen_paddingBR",
+            ["marginTL"] = "muppet_frame_brightGreen_shadowRisen_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightGreen_shadowRisen_marginTL_paddingBR",
+        },
+        brightRed = {
+            ["plain"] = "muppet_frame_brightRed",
+            ["paddingBR"] = "muppet_frame_brightRed_paddingBR",
+            ["marginTL"] = "muppet_frame_brightRed_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightRed_marginTL_paddingBR",
+        },
+        brightRed_shadowSunken = {
+            ["plain"] = "muppet_frame_brightRed_shadowSunken",
+            ["paddingBR"] = "muppet_frame_brightRed_shadowSunken_paddingBR",
+            ["marginTL"] = "muppet_frame_brightRed_shadowSunken_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightRed_shadowSunken_marginTL_paddingBR",
+        },
+        brightRed_shadowRisen = {
+            ["plain"] = "muppet_frame_brightRed_shadowRisen",
+            ["paddingBR"] = "muppet_frame_brightRed_shadowRisen_paddingBR",
+            ["marginTL"] = "muppet_frame_brightRed_shadowRisen_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightRed_shadowRisen_marginTL_paddingBR",
+        },
+        brightYellow = {
+            ["plain"] = "muppet_frame_brightYellow",
+            ["paddingBR"] = "muppet_frame_brightYellow_paddingBR",
+            ["marginTL"] = "muppet_frame_brightYellow_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightYellow_marginTL_paddingBR",
+        },
+        brightYellow_shadowSunken = {
+            ["plain"] = "muppet_frame_brightYellow_shadowSunken",
+            ["paddingBR"] = "muppet_frame_brightYellow_shadowSunken_paddingBR",
+            ["marginTL"] = "muppet_frame_brightYellow_shadowSunken_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightYellow_shadowSunken_marginTL_paddingBR",
+        },
+        brightYellow_shadowRisen = {
+            ["plain"] = "muppet_frame_brightYellow_shadowRisen",
+            ["paddingBR"] = "muppet_frame_brightYellow_shadowRisen_paddingBR",
+            ["marginTL"] = "muppet_frame_brightYellow_shadowRisen_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightYellow_shadowRisen_marginTL_paddingBR",
         },
     },
     scroll = {
