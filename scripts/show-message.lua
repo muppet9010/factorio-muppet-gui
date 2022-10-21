@@ -8,7 +8,6 @@ local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
 local StyleData = require("utility.lists.style-data")
 local MuppetStyles = StyleData.MuppetStyles
---local TableUtils = require("utility.helper-utils.table-utils") -- TODO: position tests
 
 ---@class ShowMessageDetails
 ---@field audience AudienceDetails
@@ -147,42 +146,6 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
             outerContainerSubType = background
         end
 
-        -- Make the generic GUI details object.
-        ---@type UtilityGuiUtil_ElementDetails_Add
-        local guiElementDetails = {
-            descriptiveName = elementName,
-            type = outerContainerType,
-            direction = "horizontal",
-            style = MuppetStyles[outerContainerType][outerContainerSubType].marginTL,
-            storeName = "ShowMessage",
-            styling = { maximal_width = maxWidth },
-            children = {
-                {
-                    type = "label",
-                    caption = simpleText,
-                    style = fontType,
-                    styling = { font_color = fontColor }
-                },
-                {
-                    type = "flow",
-                    direction = "horizontal",
-                    style = MuppetStyles.flow.horizontal.marginTL_paddingBR,
-                    styling = { horizontal_align = "right", horizontally_stretchable = true },
-                    exclude = not closeButton,
-                    children = {
-                        {
-                            descriptiveName = elementName .. "_close",
-                            type = "sprite-button",
-                            sprite = closeButtonSprite,
-                            style = MuppetStyles.spriteButton.noBorderHover_clickable, -- Means we never have a depressed graphic, but that doesn't matter as its having the hover that people will notice.
-                            styling = closeButtonStyling,
-                            registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = outerContainerType } --[[@as GuiToRemoveDetails]] }
-                        }
-                    }
-                }
-            }
-        }
-
         -- Add the GUI to each player.
         for _, player in pairs(players) do
             local player_index = player.index
@@ -211,7 +174,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                                 returnElement = true,
                                 direction = "horizontal",
                                 style = MuppetStyles.flow.horizontal.plain,
-                                styling = { vertical_align = "top" }
+                                styling = { vertical_align = "top", horizontal_align = "center", horizontally_stretchable = true }
                             },
                             {
                                 descriptiveName = "center",
@@ -220,7 +183,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                                 returnElement = true,
                                 direction = "horizontal",
                                 style = MuppetStyles.flow.horizontal.plain,
-                                styling = { vertical_align = "center", height = player.display_resolution.height / 3 }
+                                styling = { vertical_align = "center", height = player.display_resolution.height / 3, horizontal_align = "center", horizontally_stretchable = true }
                             },
                             {
                                 descriptiveName = "belowCenter",
@@ -229,7 +192,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                                 returnElement = true,
                                 direction = "horizontal",
                                 style = MuppetStyles.flow.horizontal.plain,
-                                styling = { vertical_align = "bottom" }
+                                styling = { vertical_align = "bottom", horizontal_align = "center", horizontally_stretchable = true }
                             },
                         }
                     }) ---@cast flowElements - nil
@@ -241,30 +204,6 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                     belowCenterFlow = GUIUtil.GetElementFromPlayersReferenceStorage(player_index, "ShowMessage", "belowCenter", "flow")
                     centerFlow.style.height = player.display_resolution.height / 3 -- Update the height each time as a way to handle screen resolution changes over time. We don't want to bother reacting to the event.
                 end
-
-
-
-                -- TODO - Position Testing - START
-                --[[local topEntry = TableUtils.DeepCopy(guiElementDetails)
-                local bottomEntry = TableUtils.DeepCopy(guiElementDetails)
-
-                topEntry.parent = aboveCenterFlow
-                topEntry.descriptiveName = topEntry.descriptiveName .. "_top"
-                topEntry.children[1].caption = "top"
-                GUIUtil.AddElement(topEntry)
-
-                guiElementDetails.parent = centerFlow
-                guiElementDetails.descriptiveName = guiElementDetails.descriptiveName .. "_center"
-                guiElementDetails.children[1].caption = "center"
-                GUIUtil.AddElement(guiElementDetails)
-
-                bottomEntry.parent = belowCenterFlow
-                bottomEntry.descriptiveName = bottomEntry.descriptiveName .. "_bottom"
-                bottomEntry.children[1].caption = "bottom"
-                GUIUtil.AddElement(bottomEntry)]]
-                -- TODO - Position Testing - START
-
-
 
                 -- Record the custom center parent GUI for adding to normally.
                 if position == "aboveCenter" then
@@ -279,10 +218,40 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
             end
 
             -- Add the message GUI to the player.
-            ----[[ TODO: real code to be disabled in Position Testing.
-            guiElementDetails.parent = parentGui
-            GUIUtil.AddElement(guiElementDetails)
-            --]]
+            GUIUtil.AddElement({
+                parent = parentGui,
+                descriptiveName = elementName,
+                type = outerContainerType,
+                direction = "horizontal",
+                style = MuppetStyles[outerContainerType][outerContainerSubType].marginTL,
+                storeName = "ShowMessage",
+                styling = { maximal_width = maxWidth },
+                children = {
+                    {
+                        type = "label",
+                        caption = simpleText,
+                        style = fontType,
+                        styling = { font_color = fontColor }
+                    },
+                    {
+                        type = "flow",
+                        direction = "horizontal",
+                        style = MuppetStyles.flow.horizontal.marginTL_paddingBR,
+                        styling = { horizontal_align = "right" },
+                        exclude = not closeButton,
+                        children = {
+                            {
+                                descriptiveName = elementName .. "_close",
+                                type = "sprite-button",
+                                sprite = closeButtonSprite,
+                                style = MuppetStyles.spriteButton.noBorderHover_clickable, -- Means we never have a depressed graphic, but that doesn't matter as its having the hover that people will notice.
+                                styling = closeButtonStyling,
+                                registerClick = { actionName = "ShowMessage.CloseSimpleTextFrame", data = { name = elementName, type = outerContainerType } --[[@as GuiToRemoveDetails]] }
+                            }
+                        }
+                    }
+                }
+            })
 
             -- Record the close button having been added for this player to the global list of buttons for this message.
             if closeButton then

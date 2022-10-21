@@ -62,15 +62,15 @@ An auto closing GUI for all connected players, shown at the top of the screen:
 
 `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
 
-A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
+A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
 
-`/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="center", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
+`/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="left", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
 
-Black text and close button on a transparent background at the center of the screen:
+A short essay on a transparent background at the center of the screen with a small max width:
 
-`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="some black text", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent"} , close={xbutton=true, xbuttonColor="black"} })`
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent", maxWidth=300} , close={xbutton=true, xbuttonColor="black"} })`
 
-A bright green background box with black test that auto closes above the center of the screen:
+A bright green background box with black text that auto closes above the center of the screen:
 
 `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
 
@@ -90,16 +90,16 @@ While JSON doesn't define `nil` or `null`, Factorio JSON does recognise `null` a
 
 An auto closing GUI for all connected players, shown at the top of the screen:
 
-`/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5}}`
+`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5} }`
 
-A GUi with a close X button for all connected players not specifically excluded, shown in the center of the screen:
+A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
 
-`/muppet_gui_show_message {"audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"center", "fontSize":"small", "fontStyle":"bold"}, "close":{"xbutton":true}}`
+`/muppet_gui_show_message { "audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"left", "fontSize":"small", "fontStyle":"bold"}, "close":{"xbutton":true} }`
 
-Black text and close button on a transparent background at the center of the screen:
+A short essay on a transparent background at the center of the screen with a small max width:
 
-`/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"some black text", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent"}, "close":{"xbutton":true, "xbuttonColor":"black"}}`
+`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent", "maxWidth":300}, "close":{"xbutton":true, "xbuttonColor":"black"} }`
 
-A bright green background box with black test that auto closes above the center of the screen:
+A bright green background box with black text that auto closes above the center of the screen:
 
-`/muppet_gui_show_message {"audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10}}`
+`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10} }`
