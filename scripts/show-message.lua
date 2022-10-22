@@ -420,20 +420,22 @@ ShowMessage.GetMessageData = function(data)
 
     local fontColorString = message.fontColor
     local fontColor = Colors.white
-    if fontColorString ~= nil and fontColorString ~= "" then
+    if fontColorString ~= nil then
         fontColor = Colors[fontColorString] --[[@as Color]]
         if fontColor == nil then
             return "'message.fontColor' specified not a valid option, got: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
-    local maxWidth ---@type uint
-    if message.maxWidth ~= nil and message.maxWidth ~= "" then
-        maxWidth = tonumber(message.maxWidth) --[[@as uint]]
-        if maxWidth == nil or maxWidth <= 0 then
-            return "optional 'message.maxWidth' is set, but not a positive number: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+    local maxWidth = message.maxWidth
+    if maxWidth ~= nil then
+        if type(maxWidth) ~= "number" then
+            return "optional 'message.maxWidth' is set, but isn't a number, is type: `" .. type(maxWidth) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         maxWidth = math.floor(maxWidth) --[[@as uint]]
+        if maxWidth <= 0 then
+            return "optional 'message.maxWidth' is set, but not a positive number: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        end
     end
 
     local background = message.background
@@ -463,11 +465,13 @@ ShowMessage.GetCloseData = function(data, warningPrefix, currentTick)
     end
 
     local closeTick ---@type uint|nil
-    local CloseTimeoutString = close.timeout
-    if CloseTimeoutString ~= nil then
-        local closeTimeout = tonumber(CloseTimeoutString)
-        if closeTimeout == nil or closeTimeout <= 0 then
-            return "'close.timeout' specified, but not valid positive number, got: `" .. tostring(CloseTimeoutString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+    local closeTimeout = close.timeout
+    if closeTimeout ~= nil then
+        if type(closeTimeout) ~= "number" then
+            return "optional 'close.timeout' is set, but isn't a number, is type: `" .. type(closeTimeout) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        end
+        if closeTimeout <= 0 then
+            return "'close.timeout' specified, but not valid positive number, got: `" .. tostring(closeTimeout) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         closeTick = currentTick + math.floor(closeTimeout * 60)
         if closeTick > MathUtils.uintMax then

@@ -10,10 +10,11 @@ Date: 2020-10-XXXXX
   Changes:
     - Custom colors renamed to be camel cased; only colors affected are `lightred` to `lightRed`, and `guiHeadingColor` to `guiHeadingColor`. The standard color names in the list remain all lower cased as they were before. `lightred` was in example text in readme previously.
     - Small text gets a smaller x close button so the GUI background isn't expanded just for it.
+    - number options must be supplied as numbers, you can't provide them as strings any more. The other data types didn't do conversation before.
   Bugfixes:
   Info:
     - Mod tidy up - Mod globals related to close buttons will remove themselves when finished with. Avoids the global list getting infinitely long which could in theory cause slowness or save file size growth over millennium. Makes any future debugging easier.
-    - Do the mod version update when no GUIs created by this mod are on the screen. This update isn't backwards upgradable as I don't think any streamer would upgrade the mod version mid GUI event.
+    - Update this mod when no GUIs created by this mod are on the screen. This update isn't backwards upgradable as I don't think any streamer would upgrade the mod version mid GUI event. And there's been a lot of internal data changes, which would be a pain to migrate and test.
 ---------------------------------------------------------------------------------------------------
 Version: 20.0.3
 Date: 2020-12-02
