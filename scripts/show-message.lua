@@ -7,7 +7,7 @@ local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
 local Colors = require("utility.lists.colors")
 local MathUtils = require("utility.helper-utils.math-utils")
 local StyleData = require("utility.lists.style-data")
-local MuppetStyles = StyleData.MuppetStyles
+local MuppetStyles, MuppetFonts = StyleData.MuppetStyles, StyleData.MuppetFonts
 local StringUtils = require("utility.helper-utils.string-utils")
 
 ---@class ShowMessageDetails
@@ -52,7 +52,7 @@ local StringUtils = require("utility.helper-utils.string-utils")
 
 ---@alias ShowMessage_Logic "only"|"not"|"all"
 ---@alias ShowMessage_Position "top"|"left"|"center"|"aboveCenter"|"belowCenter"
----@alias ShowMessage_FontSize "small"|"medium"|"large"
+---@alias ShowMessage_FontSize "small"|"medium"|"large"|"huge"|"massive"|"gigantic"
 ---@alias ShowMessage_FontStyle "regular"|"semibold"|"bold"
 ---@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"|"brightGreen"|"brightRed"|
 ---@alias ShowMessage_CloseButtonColor "white"|"black"
@@ -121,7 +121,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
         return audienceErrorMessage
     end
 
-    local messageErrorMessage, simpleText, position, fontType, fontSize, fontColor, maxWidth, background = ShowMessage.GetMessageData(data)
+    local messageErrorMessage, simpleText, position, labelType, fontType, fontSize, fontColor, maxWidth, background = ShowMessage.GetMessageData(data)
     if messageErrorMessage ~= nil then
         return messageErrorMessage
     end
@@ -270,9 +270,9 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                         descriptiveName = elementName .. "_simpleText",
                         type = "label",
                         caption = simpleRenderText,
-                        style = fontType,
+                        style = labelType,
                         storeName = "ShowMessage",
-                        styling = { font_color = fontColor }
+                        styling = { font_color = fontColor, font = fontType }
                     },
                     {
                         type = "flow",
@@ -372,7 +372,8 @@ end
 ---@return string|nil errorMessage
 ---@return string simpleText
 ---@return ShowMessage_Position position
----@return ShowMessage_FontStyle fontType
+---@return string labelType
+---@return string|nil fontType
 ---@return ShowMessage_FontSize fontSize
 ---@return Color fontColor
 ---@return uint|nil maxWidth
@@ -402,7 +403,7 @@ ShowMessage.GetMessageData = function(data)
     if fontSize == nil then
         return "mandatory 'message.fontSize' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
-    if fontSize ~= "small" and fontSize ~= "medium" and fontSize ~= "large" then
+    if fontSize ~= "small" and fontSize ~= "medium" and fontSize ~= "large" and fontSize ~= "huge" and fontSize ~= "massive" and fontSize ~= "gigantic" then
         return "mandatory 'message.fontSize' string not valid option, got: `" .. tostring(fontSize) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle == nil then
@@ -411,11 +412,23 @@ ShowMessage.GetMessageData = function(data)
     if fontStyle ~= "regular" and fontStyle ~= "semibold" and fontStyle ~= "bold" then
         return "mandatory 'message.fontStyle' string not valid option, got: `" .. tostring(fontStyle) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
-    local fontType
-    if fontStyle == "regular" then
-        fontType = MuppetStyles.label.text[fontSize].plain
+    -- The non standard font sizes need capturing separately as there's no label styles for them.
+    local labelType
+    local fontType ---@type string|nil
+    if fontSize == "small" or fontSize == "medium" or fontSize == "large" then
+        if fontStyle == "regular" then
+            labelType = MuppetStyles.label.text[fontSize].plain
+        else
+            labelType = MuppetStyles.label.text[fontSize][fontStyle]
+        end
     else
-        fontType = MuppetStyles.label.text[fontSize][fontStyle]
+        -- The massive font sizes.
+        labelType = MuppetStyles.label.text["large"][fontStyle]
+        if fontStyle == "regular" then
+            fontType = MuppetFonts["muppet_" .. fontSize .. StyleData.styleVersion] --[[@as string]]
+        else
+            fontType = MuppetFonts["muppet_" .. fontSize .. "_" .. fontStyle .. StyleData.styleVersion] --[[@as string]]
+        end
     end
 
     local fontColorString = message.fontColor
@@ -447,7 +460,7 @@ ShowMessage.GetMessageData = function(data)
         background = "main"
     end
 
-    return nil, simpleText, position, fontType, fontSize, fontColor, maxWidth, background
+    return nil, simpleText, position, labelType, fontType, fontSize, fontColor, maxWidth, background
 end
 
 --- Work out the close details from the raw data.

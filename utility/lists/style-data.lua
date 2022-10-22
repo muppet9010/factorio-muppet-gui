@@ -345,6 +345,7 @@ StyleData.GeneratePrototypes = function()
         end
     end
 
+    --- The extra fonts must be set manually as styling.
     ---@type Prototype.Font[]
     local muppetFonts = {
         {
@@ -400,6 +401,60 @@ StyleData.GeneratePrototypes = function()
             name = "muppet_large_bold" .. StyleData.styleVersion,
             from = "default-bold",
             size = 18
+        },
+        {
+            type = "font",
+            name = "muppet_huge" .. StyleData.styleVersion,
+            from = "default",
+            size = 36
+        },
+        {
+            type = "font",
+            name = "muppet_huge_semibold" .. StyleData.styleVersion,
+            from = "default-semibold",
+            size = 36
+        },
+        {
+            type = "font",
+            name = "muppet_huge_bold" .. StyleData.styleVersion,
+            from = "default-bold",
+            size = 36
+        },
+        {
+            type = "font",
+            name = "muppet_massive" .. StyleData.styleVersion,
+            from = "default",
+            size = 60
+        },
+        {
+            type = "font",
+            name = "muppet_massive_semibold" .. StyleData.styleVersion,
+            from = "default-semibold",
+            size = 60
+        },
+        {
+            type = "font",
+            name = "muppet_massive_bold" .. StyleData.styleVersion,
+            from = "default-bold",
+            size = 60
+        },
+        {
+            type = "font",
+            name = "muppet_gigantic" .. StyleData.styleVersion,
+            from = "default",
+            size = 100
+        },
+        {
+            type = "font",
+            name = "muppet_gigantic_semibold" .. StyleData.styleVersion,
+            from = "default-semibold",
+            size = 100
+        },
+        {
+            type = "font",
+            name = "muppet_gigantic_bold" .. StyleData.styleVersion,
+            from = "default-bold",
+            size = 100
         }
     }
     data:extend(muppetFonts)
@@ -940,6 +995,15 @@ StyleData.MuppetFonts = {
     muppet_large_1_1_0 = "muppet_large_1_1_0",
     muppet_large_semibold_1_1_0 = "muppet_large_semibold_1_1_0",
     muppet_large_bold_1_1_0 = "muppet_large_bold_1_1_0",
+    muppet_huge_1_1_0 = "muppet_huge_1_1_0",
+    muppet_huge_semibold_1_1_0 = "muppet_huge_semibold_1_1_0",
+    muppet_huge_bold_1_1_0 = "muppet_huge_bold_1_1_0",
+    muppet_massive_1_1_0 = "muppet_massive_1_1_0",
+    muppet_massive_semibold_1_1_0 = "muppet_massive_semibold_1_1_0",
+    muppet_massive_bold_1_1_0 = "muppet_massive_bold_1_1_0",
+    muppet_gigantic_1_1_0 = "muppet_gigantic_1_1_0",
+    muppet_gigantic_semibold_1_1_0 = "muppet_gigantic_semibold_1_1_0",
+    muppet_gigantic_bold_1_1_0 = "muppet_gigantic_bold_1_1_0",
 }
 
 return StyleData

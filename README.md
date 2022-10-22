@@ -20,8 +20,8 @@ The mandatory option categories are listed below.
 | audience | logic | mandatory | string | The logic to be applied with the `players` option to define which connected players see the message. Valid values `only`, `not` and `all`. |
 | audience | players | special | string[] | An array of players to have the logic applied to. If the `logic` option is `only` or `not` then the `players` list is mandatory. If the `logic` option is `all` then the `players` list will be ignored and can be either not provided or be `nil`. |
 | message | position | mandatory | string | Position on the screen. Valid values `top`, `left`, `center`, `aboveCenter`, `belowCenter`. See Notes for details. |
-| message | fontSize | mandatory | string | The size of the text. Valid values: `small`, `medium`, `large` |
-| message | fontStyle | mandatory | string | The style of the text. Valid values: `regular`, `semibold`, `bold` |
+| message | fontSize | mandatory | string | The size of the text. Valid values: `small`, `medium`, `large`, `huge`, `massive`, `gigantic`. |
+| message | fontStyle | mandatory | string | The style of the text. Valid values: `regular`, `semibold`, `bold`. |
 | message | fontColor | optional | string | The color of the text. See notes for valid list of color options. If not provided or `nil` the default of `white` is used. |
 | message | simpleText | mandatory | string | The text to be shown in the message. To include a `timer` using its Option Group options see the notes section. |
 | message | maxWidth | optional | uint | Max width of the message box in pixels. Suggested minimum value is 200 and a large width of 1000. Text will wrap on to multiple lines automatically within the set width. Don't provide the option or set to nil if no max width is desired. Default is no max width and this works fine with shorter messages. |
@@ -50,6 +50,7 @@ They are defined to the command/remote call as an object of `Option Group` field
 #### Notes
 
 - `position` options are all relative and will be added to the end of any GUIs in that position on the screen. `top` is along the top of the screen, left to right. `left` is along the left edge of the screen, top to bottom. `center` is in the very center middle of the screen (horizontally and vertically), multiple GUIs expand horizontally. `aboveCenter` is about 1/3 down from the top middle of the screen, multiple GUIs expand horizontally. `belowCenter` is about 1/3 up from the bottom middle of the screen, multiple GUIs expand horizontally. If other mods add GUIs to the center of the screen then these will stack horizontally to this mod's 3 center position message GUIs.
+- `fontSize` option names correspond to specific font sizes available: `small` = 12, `medium` = 16, `large` = 18, `huge` = 36, `massive` = 60, `gigantic` = 100.
 - `fontColor` options can be found either in the mod files at `utility\lists\colors.lua` or at the website `https://www.rapidtables.com/web/color/html-color-codes.html`. The option defaults to the value of `white`.
 - `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color 9see through). `brightRed`, `brightGreen` and `brightYellow` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
 - The various choices in the GUI are often limited by what graphics Vanilla Factorio includes. If there's something specific you'd like added raise it in the discussion section and I can check if there is already a graphic for it.
@@ -79,9 +80,9 @@ A short essay on a transparent background at the center of the screen with a sma
 
 `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent", maxWidth=300} , close={xbutton=true, xbuttonColor="black"} })`
 
-A bright green background box with black text that auto closes above the center of the screen:
+A bright green background box with massive black text that auto closes above the center of the screen:
 
-`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="massive", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
 
 A countdown from 10 seconds and some text:
 
@@ -114,9 +115,9 @@ A short essay on a transparent background at the center of the screen with a sma
 
 `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent", "maxWidth":300}, "close":{"xbutton":true, "xbuttonColor":"black"} }`
 
-A bright green background box with black text that auto closes above the center of the screen:
+A bright green background box with massive black text that auto closes above the center of the screen:
 
-`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10} }`
+`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"massive", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10} }`
 
 A countdown from 10 seconds and some text:
 
