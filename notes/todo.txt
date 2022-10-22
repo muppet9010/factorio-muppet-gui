@@ -3,8 +3,8 @@ Now:
 
 
 Next:
-	- Add timer to the text display mod so it can be used with time limited abilities via rcon on screen nicely. Support counting up/down and min/max values.
-    - look at way via remote interfaces that existing text's can be removed by a name. For use with scripting chat integrations, i.e. add a countdown that is then removed when the player dies. Will need to avoid duplicate entries being created with the same name.
+    - remove the tonumber() usage and just force the data types. Also can remove checking for blank strings. Include as Changes in changelog.
+    - look at way via remote interfaces that existing text's can be removed by a name. For use with scripting chat integrations, i.e. add a timer that is then removed when the player dies. Will need to avoid duplicate entries being created with the same name.
 
 
 

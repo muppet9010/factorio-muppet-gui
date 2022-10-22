@@ -13,7 +13,7 @@ A simple command to put a message in-game within a GUI to players. Supports opti
 
 #### Options
 
-The available options are listed below.
+The mandatory option categories are listed below.
 
 | Option Group | Option Name | Mandatory | Value Type | Details |
 | --- | --- | --- | --- | --- |
@@ -23,12 +23,20 @@ The available options are listed below.
 | message | fontSize | mandatory | string | The size of the text. Valid values: `small`, `medium`, `large` |
 | message | fontStyle | mandatory | string | The style of the text. Valid values: `regular`, `semibold`, `bold` |
 | message | fontColor | optional | string | The color of the text. See notes for valid list of color options. If not provided or `nil` the default of `white` is used. |
-| message | simpleText | mandatory | string | The text to be shown in the message. |
+| message | simpleText | mandatory | string | The text to be shown in the message. To include a `timer` using its Option Group options see the notes section. |
 | message | maxWidth | optional | uint | Max width of the message box in pixels. Suggested minimum value is 200 and a large width of 1000. Text will wrap on to multiple lines automatically within the set width. Don't provide the option or set to nil if no max width is desired. Default is no max width and this works fine with shorter messages. |
 | message | background | optional | string | The background type of the GUI. Either `main`, `contentInnerLight`, `transparent`, `brightRed`, `brightGreen`, `brightYellow`. Defaults to `main`.
 | close | timeout | special | uint | Either `timeout` or `xbutton` must be specified. If Timeout is provided and greater than 0 the message will auto close after this number of seconds. |
 | close | xbutton | special | boolean | Either `timeout` or `xbutton` must be specified. If XButton is enabled (true) then a close X button will be shown on the top right of the GUI message. |
 | close | xbuttonColor | optional | string | The color of the close button if its enabled. Either `white` or `black`. Defaults to `white`. |
+
+The optional option categories are listed below. You can either include the `Option Group`'s options or not, based on your usage.
+
+| Option Group | Option Name | Mandatory | Value Type | Details |
+| --- | --- | --- | --- | --- |
+| timer | startingValue | mandatory | int | The number of seconds to start the timer at (positive or negative whole number). |
+| timer | countDirection | optional | string | The direction to count in, either `down` or `up`. Defaults to `down`. |
+| timer | displayFormat | optional | string | The max time unit to format the number as, either `second` or `minute`. Defaults to `second`. |
 
 They are defined to the command/remote call as an object of `Option Group` fields. With each option group field being an object of it's fields.
 
@@ -45,6 +53,7 @@ They are defined to the command/remote call as an object of `Option Group` field
 - `fontColor` options can be found either in the mod files at `utility\lists\colors.lua` or at the website `https://www.rapidtables.com/web/color/html-color-codes.html`. The option defaults to the value of `white`.
 - `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color 9see through). `brightRed`, `brightGreen` and `brightYellow` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
 - The various choices in the GUI are often limited by what graphics Vanilla Factorio includes. If there's something specific you'd like added raise it in the discussion section and I can check if there is already a graphic for it.
+- `timer` Option Group is used to define how a timer should be configured. You add the special text `[!TIMER!]` within the message. This will be replaced with the time which will update every second. It's advised to set the timeout to the same value as you want to count to so that on reaching 0 seconds remaining the message vanishes.
 
 -------------------------------------------------
 
@@ -73,6 +82,11 @@ A short essay on a transparent background at the center of the screen with a sma
 A bright green background box with black text that auto closes above the center of the screen:
 
 `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
+
+A countdown from 10 seconds and some text:
+
+`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="something bad will happen in: [!TIMER!]", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="white", background="brightRed"} , close={timeout=10} , timer={startingValue=10} })`
+
 
 -------------------------------------------------
 
@@ -103,3 +117,7 @@ A short essay on a transparent background at the center of the screen with a sma
 A bright green background box with black text that auto closes above the center of the screen:
 
 `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10} }`
+
+A countdown from 10 seconds and some text:
+
+`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"something bad will happen in: [!TIMER!]", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"white", "background":"brightRed"}, "close":{"timeout":10}, "timer":{"startingValue":10} }`

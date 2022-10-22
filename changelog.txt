@@ -6,12 +6,14 @@ Date: 2020-10-XXXXX
     - Added optional `transparent`, `contentInnerLight`, `brightRed`, `brightGreen` and `brightYellow` background option. Defaults to main Factorio grey color.
     - Added optional close button color option to be either white or black. Defaults to white.
     - Added `aboveCenter` and `belowCenter` values for the `position` option. These are offsets from the center of the screen by about 1/3 screen height.
+    - Added `timer` functionality and option group. Support counting up/down from a starting value, and displaying the number in a given max time unit. Display as either just seconds or minutes:seconds.
   Changes:
     - Custom colors renamed to be camel cased; only colors affected are `lightred` to `lightRed`, and `guiHeadingColor` to `guiHeadingColor`. The standard color names in the list remain all lower cased as they were before. `lightred` was in example text in readme previously.
     - Small text gets a smaller x close button so the GUI background isn't expanded just for it.
   Bugfixes:
   Info:
     - Mod tidy up - Mod globals related to close buttons will remove themselves when finished with. Avoids the global list getting infinitely long which could in theory cause slowness or save file size growth over millennium. Makes any future debugging easier.
+    - Do the mod version update when no GUIs created by this mod are on the screen. This update isn't backwards upgradable as I don't think any streamer would upgrade the mod version mid GUI event.
 ---------------------------------------------------------------------------------------------------
 Version: 20.0.3
 Date: 2020-12-02
