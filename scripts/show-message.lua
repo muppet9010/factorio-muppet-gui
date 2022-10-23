@@ -62,7 +62,7 @@ local StringUtils = require("utility.helper-utils.string-utils")
 ShowMessage.CreateGlobals = function()
     global.showMessage = global.showMessage or {} ---@class ShowMessage_Global
     global.showMessage.count = global.showMessage.count or 0 ---@type int
-    global.showMessage.guis = global.showMessage.guis or {} ---@type table<string, GuiDetails>
+    global.showMessage.guis = global.showMessage.guis or {} ---@type table<string, GuiDetails> # Key'd by name (messageId) of the GuiDetails.
 end
 
 ShowMessage.OnLoad = function()
@@ -70,6 +70,9 @@ ShowMessage.OnLoad = function()
     EventScheduler.RegisterScheduledEventType("ShowMessage.RemoveNamedElementForAll_Scheduled", ShowMessage.RemoveNamedElementForAll_Scheduled)
     GUIActionsClick.LinkGuiClickActionNameToFunction("ShowMessage.CloseSimpleTextFrame_Scheduled", ShowMessage.CloseSimpleTextFrame_Scheduled)
     EventScheduler.RegisterScheduledEventType("ShowMessage.UpdateSimpleTextTimer_Scheduled", ShowMessage.UpdateSimpleTextTimer_Scheduled)
+
+    MOD.Interfaces.ShowMessage = {}
+    MOD.Interfaces.ShowMessage.RemoveGuiForAll = ShowMessage.RemoveGuiForAll
 end
 
 --- The show_message command has been run.
@@ -89,6 +92,8 @@ ShowMessage.ShowMessage_CommandRun = function(commandData)
         Logging.LogPrintError(errorMessageStart .. errorMessage)
         return
     end
+
+    return
 end
 
 --- The show_message remote interface has been called.
@@ -102,44 +107,48 @@ ShowMessage.ShowMessage_RemoteInterface = function(data)
         return
     end
 
-    local errorMessage = ShowMessage.ShowMessage_DoIt(data, warningPrefix)
+    local errorMessage, messageId = ShowMessage.ShowMessage_DoIt(data, warningPrefix)
     if errorMessage ~= nil then
         Logging.LogPrintError(errorMessageStart .. errorMessage)
         return
     end
+
+    return messageId
 end
 
 --- Add the message from the command/remote.
 ---@param data ShowMessageDetails
 ---@param warningPrefix string
 ---@return string|nil errorMessage
+---@return string messageId
 ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
     local currentTick = game.tick
 
     local audienceErrorMessage, players = ShowMessage.GetAudienceData(data, warningPrefix)
     if audienceErrorMessage ~= nil then
-        return audienceErrorMessage
+        return audienceErrorMessage, ""
     end
 
     local messageErrorMessage, simpleText, position, labelType, fontType, fontSize, fontColor, maxWidth, background = ShowMessage.GetMessageData(data, warningPrefix)
     if messageErrorMessage ~= nil then
-        return messageErrorMessage
+        return messageErrorMessage, ""
     end
 
     local closeErrorMessage, closeTick, closeButton, closeButtonColor = ShowMessage.GetCloseData(data, warningPrefix, currentTick)
     if closeErrorMessage ~= nil then
-        return closeErrorMessage
+        return closeErrorMessage, ""
     end
 
     local timerErrorMessage, timerFeatureUsed, timerStartingValue, timerCountDirection, timerDisplayFormat = ShowMessage.GetTimerData(data, warningPrefix)
     if timerErrorMessage ~= nil then
-        return timerErrorMessage
+        return timerErrorMessage, ""
     end
 
-    if simpleText ~= nil then
-        global.showMessage.count = global.showMessage.count + 1
-        local elementName = "muppet_gui_show_message" .. global.showMessage.count
+    -- Generate the outer message GUI's id.
+    global.showMessage.count = global.showMessage.count + 1
+    local messageId = "muppet_gui_show_message" .. global.showMessage.count
 
+    if simpleText ~= nil then
         -- Process the option specific stuff.
         ---@type table<string, any>
         local closeButtonStyling
@@ -176,14 +185,14 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
 
         ---@type GuiDetails
         local guiDetails = {
-            name = elementName,
+            name = messageId,
             type = outerContainerType,
             finished = false,
             openPlayers = {},
             originalSimpleText = simpleText,
             closeButton = closeButton
         }
-        global.showMessage.guis[elementName] = guiDetails
+        global.showMessage.guis[messageId] = guiDetails
 
         -- Add the GUI to each player.
         for _, player in pairs(players) do
@@ -259,7 +268,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
             -- Add the message GUI to the player.
             GUIUtil.AddElement({
                 parent = parentGui,
-                descriptiveName = elementName,
+                descriptiveName = messageId,
                 type = outerContainerType,
                 direction = "horizontal",
                 style = MuppetStyles[outerContainerType][outerContainerSubType].marginTL,
@@ -267,7 +276,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                 styling = { maximal_width = maxWidth },
                 children = {
                     {
-                        descriptiveName = elementName .. "_simpleText",
+                        descriptiveName = messageId .. "_simpleText",
                         type = "label",
                         caption = simpleRenderText,
                         style = labelType,
@@ -282,7 +291,7 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
                         exclude = not closeButton,
                         children = {
                             {
-                                descriptiveName = elementName .. "_close",
+                                descriptiveName = messageId .. "_close",
                                 type = "sprite-button",
                                 sprite = closeButtonSprite,
                                 style = MuppetStyles.spriteButton.noBorderHover_clickable, -- Means we never have a depressed graphic, but that doesn't matter as its having the hover that people will notice.
@@ -308,11 +317,11 @@ ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
             guiDetails.timerCountDirection = timerCountDirection
             guiDetails.timerCurrentSeconds = timerStartingValue
             guiDetails.timerDisplayFormat = timerDisplayFormat
-            EventScheduler.ScheduleEventOnce(currentTick + 60, "ShowMessage.UpdateSimpleTextTimer_Scheduled", elementName .. guiDetails.timerCurrentSeconds, guiDetails)
+            EventScheduler.ScheduleEventOnce(currentTick + 60, "ShowMessage.UpdateSimpleTextTimer_Scheduled", messageId .. guiDetails.timerCurrentSeconds, guiDetails)
         end
     end
 
-    return nil
+    return nil, messageId
 end
 
 --- Work out the audience settings from the raw data.

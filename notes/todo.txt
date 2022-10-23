@@ -3,7 +3,6 @@ Now:
 
 
 Next:
-    - look at way via remote interfaces that existing text's can be removed by a name. For use with scripting chat integrations, i.e. add a timer that is then removed when the player dies. Will need to avoid duplicate entries being created with the same name.
 
 
 

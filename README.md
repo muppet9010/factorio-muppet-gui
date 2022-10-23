@@ -16,7 +16,7 @@ While many mods will include GUI alerts for their events, when activating effect
 Add Simple Message
 ===============
 
-A simple remote call/command to put a message in-game within a GUI to players. Supports options around auto closing or close X button, white or black listing named players from the message, as well as the look and feel of the message. Also includes a timer option to count up/down.
+A remote call/command to put a message in-game within a GUI to players. Supports options around auto closing or close X button, white or black listing named players from the message, as well as the look and feel of the message. Also includes a timer option to count up/down.
 
 #### Options
 
@@ -47,8 +47,22 @@ The optional option categories are listed below. You can either include the `Opt
 
 They are defined to the command/remote call as an object of `Option Group` fields. With each option group field being an object of it's fields.
 
-- Format `table<string, table<string, any>`.
+- Format: `table<string, table<string, any> >`
 - Partial example: `{ audience = {logic="all"} }`
+
+-------------------------------------------------
+
+
+
+#### Returns
+
+None of the returned values have to be captured in to a variable, unless you actively want to use them.
+
+Values are only returned to Remote Interface calls and not to Factorio Command.
+
+| Returned order number | Details |
+| --- | --- |
+| First | The Id of the message created. This can be used when calling to remove a message later on if desired. This is for advanced usage scenarios when you want to remove a GUI prior to it being manually closed or reaching its timeout. |
 
 -------------------------------------------------
 
@@ -135,3 +149,81 @@ A countdown from 10 seconds and some text:
 -------------------------------------------------
 
 -------------------------------------------------
+
+
+
+Remove Message
+===============
+
+A remote interface call to remove a created in-game message from all players. There's no command version as it would need a message Id that is only returned by the add message remote interface call.
+
+#### Options
+
+The options for removing a message are defined below.
+
+| Option Name | Mandatory | Value Type | Details |
+| --- | --- | --- | --- |
+| messageId | mandatory | string | The Id of the message to remove. This is returned when adding a simple message via remote interface. |
+
+They are defined to the command/remote call as an object of `Option Name` fields.
+
+- Format: `table<string, any>`
+- Partial example: `{ messageId = returnedMessageId }`
+
+-------------------------------------------------
+
+
+
+#### Notes
+
+- If an invalid messageId is provided a warning message will be displayed on screen. This includes messages that have already been removed.
+
+-------------------------------------------------
+
+
+
+#### Remote Interface
+
+Remote Interface syntax: `remote.call("muppet_gui", "remove_message", [OPTIONS TABLE]}`
+
+The [OPTIONS TABLE] in the remote interface syntax is the above Options object as a Lua table.
+
+###### Examples
+
+Create and instantly close a message. This is an abstract example.
+
+```
+/sc
+local messageIdToClose = remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=30} })
+remote.call("muppet_gui", "remove_message", {messageId = messageIdToClose})
+```
+
+-------------------------------------------------
+
+A real world example reporting the players alive state for the next 30 seconds. If they die we will briefly report their death. You will need to kill yourself to see the effect during the 30 seconds: `/sc game.player.character.die()`
+
+This is using a delay/scheduling process in the `Muppet Streamer` mod called `Delayed Lua` feature. This is an advanced code feature in the mod.
+
+- Mod Portal: https://mods.factorio.com/mod/muppet_streamer
+- Details of the feature (external wiki): https://github.com/muppet9010/factorio-muppet-streamer/wiki/Delayed-Lua#example---cancel-later-scheduled-functions
+
+```
+/sc
+local checkPlayerDiedFunction = function(data)
+    if data.player.character == nil then
+        remote.call("muppet_gui", "remove_message", {messageId = data.messageId})
+        remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="Player just died", position="aboveCenter", fontSize="large", fontStyle="regular", fontColor="black", background="brightRed"} , close={timeout=5} })
+        for _, scheduleId in pairs(data.laterScheduleIds) do
+            remote.call("muppet_streamer", "remove_delayed_lua", scheduleId)
+        end
+    end
+end
+
+local messageIdToClose = remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="Player still alive", position="aboveCenter", fontSize="large", fontStyle="regular", fontColor="black", background="brightGreen"} , close={timeout=30} })
+local data = {player = game.connected_players[1], laterScheduleIds = {}, messageId = messageIdToClose}
+
+for i=30, 0, -1 do
+    local scheduleId = remote.call("muppet_streamer", "add_delayed_lua", i*60, string.dump(checkPlayerDiedFunction), data)
+    data.laterScheduleIds[#data.laterScheduleIds+1] = scheduleId
+end
+```
