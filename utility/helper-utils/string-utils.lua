@@ -88,10 +88,18 @@ end
 ---@param requiredLength uint
 ---@return string paddedNumber
 StringUtils.PadNumberToMinimumDigits = function(number, requiredLength)
+    local negativeNumber
+    if number < 0 then
+        negativeNumber = true
+        number = 0 - number
+    end
     local numberString = tostring(number)
     local shortBy = requiredLength - string_len(numberString)
     for i = 1, shortBy do
         numberString = "0" .. numberString
+    end
+    if negativeNumber then
+        numberString = "-" .. numberString
     end
     return numberString
 end

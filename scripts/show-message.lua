@@ -658,7 +658,13 @@ end
 ---@param timerDisplayFormat ShowMessage_TimerDisplayFormat
 ---@return string simpleRenderText
 ShowMessage.GetSimpleTextTimerRenderText = function(simpleText, currentSeconds, timerDisplayFormat)
-    local timePretty = StringUtils.DisplayTimeOfTicks(currentSeconds * 60, timerDisplayFormat, "second")
+    local timePretty
+    if timerDisplayFormat == "minute" then
+        -- Can use the timer display function naturally. With the time units auto updating.
+        timePretty = StringUtils.DisplayTimeOfTicks(currentSeconds * 60, timerDisplayFormat, "second")
+    else
+        timePretty = StringUtils.PadNumberToMinimumDigits(currentSeconds, 2)
+    end
     local renderText = string.gsub(simpleText, "%[!TIMER!]", timePretty, 1)
     return renderText
 end

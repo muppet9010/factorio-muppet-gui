@@ -1,15 +1,22 @@
 # factorio-muppet-gui
 
 
-A mod that can show messages as required. Designed for use with streaming integrations.
+A mod that can show and remove messages on the screen via GUIs as required. Designed for use with streaming integrations.
+
+While many mods will include GUI alerts for their events, when activating effects via RCON/Stream Integration it is often nice to have some notification text made prominent to viewers of the stream. This mod aims to provide some functions to help with this by allowing GUIs to be created and removed adhoc as desired.
+
+-------------------------------------------------
+
+-------------------------------------------------
+
+-------------------------------------------------
 
 
 
-
-Simple In-game Message
+Add Simple Message
 ===============
 
-A simple command to put a message in-game within a GUI to players. Supports options around auto closing or close X button, white or black listing named players from the message, as well as the look and feel of the message.
+A simple remote call/command to put a message in-game within a GUI to players. Supports options around auto closing or close X button, white or black listing named players from the message, as well as the look and feel of the message. Also includes a timer option to count up/down.
 
 #### Options
 
@@ -36,7 +43,7 @@ The optional option categories are listed below. You can either include the `Opt
 | --- | --- | --- | --- | --- |
 | timer | startingValue | mandatory | int | The number of seconds to start the timer at (positive or negative whole number). |
 | timer | countDirection | optional | string | The direction to count in, either `down` or `up`. Defaults to `down`. |
-| timer | displayFormat | optional | string | The max time unit to format the number as, either `second` or `minute`. Defaults to `second`. |
+| timer | displayFormat | optional | string | The time unit to format the number as, either `second` or `minute`. A value of `minute` will also show the seconds. Defaults to `second`. |
 
 They are defined to the command/remote call as an object of `Option Group` fields. With each option group field being an object of it's fields.
 
@@ -54,7 +61,7 @@ They are defined to the command/remote call as an object of `Option Group` field
 - `fontColor` options can be found either in the mod files at `utility\lists\colors.lua` or at the website `https://www.rapidtables.com/web/color/html-color-codes.html`. The option defaults to the value of `white`.
 - `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color 9see through). `brightRed`, `brightGreen` and `brightYellow` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
 - The various choices in the GUI are often limited by what graphics Vanilla Factorio includes. If there's something specific you'd like added raise it in the discussion section and I can check if there is already a graphic for it.
-- `timer` Option Group is used to define how a timer should be configured. You add the special text `[!TIMER!]` within the message. This will be replaced with the time which will update every second. It's advised to set the timeout to the same value as you want to count to so that on reaching 0 seconds remaining the message vanishes.
+- `timer` Option Group is used to define how a timer should be configured. You add the special text `[!TIMER!]` within the message. This will be replaced with the time which will update every second. It's advised to set the timeout to the same value as you want to count to so that on reaching 0 seconds remaining the message vanishes, but the timer will continue counting until removed.
 
 -------------------------------------------------
 
@@ -122,3 +129,9 @@ A bright green background box with massive black text that auto closes above the
 A countdown from 10 seconds and some text:
 
 `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"something bad will happen in: [!TIMER!]", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"white", "background":"brightRed"}, "close":{"timeout":10}, "timer":{"startingValue":10} }`
+
+-------------------------------------------------
+
+-------------------------------------------------
+
+-------------------------------------------------
