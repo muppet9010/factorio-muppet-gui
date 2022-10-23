@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 20.0.4
-Date: 2020-10-XXXXX
+Date: 2020-10-23
   Features:
     - Added remote interface to add Gui text in addition to the existing Factorio command.
     - Added optional `transparent`, `contentInnerLight`, `brightRed`, `brightGreen` and `brightYellow` background option. Defaults to main Factorio grey color.
