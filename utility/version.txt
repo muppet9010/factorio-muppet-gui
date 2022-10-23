@@ -1,3 +1,13 @@
-19.4.22
+20.11.44
 
 Created by Muppet9010: https://github.com/muppet9010/Factorio-Utils
+
+
+Hotfixes
+---------
+
+- manager-libraries\gui-util.lua: GuiUtil.AddElement() - `descriptiveName` should be optional, but was mandatory. Updated checks for features that use it also. Seems to be missed stuff from mass GUI library updates in the past.
+- lists\style-data.lua: StyleData.GeneratePrototypes() - added `_noBorderHover` graphics variant to Sprite Button type.
+- lists\style-data.lua: StyleData.GeneratePrototypes() - added `brightGreen`, `brightRed` and `brightYellow`, plus their shadow graphics variants to Frame type.
+- lists\style-data.lua: StyleData.GeneratePrototypes() - added `huge`, `massive` and `gigantic` to the font list, but not the Styles list as they will be very rarely used.
+- helper-utils\string-utils.lua: StringUtils.PadNumberToMinimumDigits() - made to handle negative numbers properly.

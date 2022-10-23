@@ -1,1 +1,1 @@
-require("utility/style-data").GeneratePrototypes()
+require("utility.lists.style-data").GeneratePrototypes()

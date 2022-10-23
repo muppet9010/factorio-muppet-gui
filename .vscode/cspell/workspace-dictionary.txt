@@ -1,0 +1,2 @@
+xbutton # Used in configuration and thus code.
+PLAYERNAME # Used in configuration example.
