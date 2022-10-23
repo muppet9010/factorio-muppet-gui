@@ -91,7 +91,7 @@ ShowMessage.ShowMessage_CommandRun = function(commandData)
     end
 end
 
---- The show_message command has been run.
+--- The show_message remote interface has been called.
 ---@param data ShowMessageDetails
 ShowMessage.ShowMessage_RemoteInterface = function(data)
     local errorMessageStart = "ERROR: remote `muppet_gui.show_message`: "
@@ -323,33 +323,33 @@ end
 ---@return ShowMessage_Logic logic
 ShowMessage.GetAudienceData = function(data, warningPrefix)
     if data.audience == nil then
-        return "mandatory 'audience' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `audience` object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     for key in pairs(data.audience--[[@as table<string, any>]] ) do
         if key ~= "logic" and key ~= "players" then
-            Logging.LogPrintWarning(warningPrefix .. "`audience` contained an unexpected key that will be ignored: " .. tostring(key))
+            Logging.LogPrintWarning(warningPrefix .. "`audience` contained an unexpected key that will be ignored: `" .. tostring(key) .. "`")
         end
     end
 
     local players = {}
     local logic = data.audience.logic
     if logic == nil then
-        return "mandatory 'audience.logic' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `audience.logic` string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if logic == "all" then
         players = game.connected_players
     else
         local playerNames = data.audience.players
         if playerNames == nil then
-            return "mandatory 'audience.players' array not provided and logic wasn't the `all` option." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "mandatory `audience.players` array not provided and logic wasn't the `all` option." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         local playerNamesAsKeys = {} ---@type table<string, string>
         for _, playerName in pairs(playerNames) do
             if type(playerName) == "string" then
                 playerNamesAsKeys[playerName] = playerName
             else
-                return "'audience.players' array contained value that wasn't a string, got: `" .. tostring(playerName) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+                return "`audience.players` array contained value that wasn't a string, got: `" .. tostring(playerName) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
             end
         end
         if logic == "only" then
@@ -367,7 +367,7 @@ ShowMessage.GetAudienceData = function(data, warningPrefix)
             end
             players = potentialPlayers
         else
-            return "invalid 'audience.logic' option provided, got: `" .. tostring(logic) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "invalid `audience.logic` option provided, got: `" .. tostring(logic) .. "`" ---@diagnostic disable-line:missing-return-value # We don`t need to return the other fields for a non success.
         end
     end
 
@@ -389,12 +389,12 @@ end
 ShowMessage.GetMessageData = function(data, warningPrefix)
     local message = data.message
     if message == nil then
-        return "mandatory 'message' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message` object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     for key in pairs(data.audience--[[@as table<string, any>]] ) do
         if key ~= "logic" and key ~= "players" then
-            Logging.LogPrintWarning(warningPrefix .. "`message` contained an unexpected key that will be ignored: " .. tostring(key))
+            Logging.LogPrintWarning(warningPrefix .. "`message` contained an unexpected key that will be ignored: `" .. tostring(key) .. "`")
         end
     end
 
@@ -402,29 +402,29 @@ ShowMessage.GetMessageData = function(data, warningPrefix)
     if simpleText ~= nil then
         simpleText = tostring(simpleText)
     else
-        return "mandatory 'message.simpleText' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.simpleText` object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local position = message.position
     if position == nil then
-        return "mandatory 'message.position' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.position` string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if position ~= "top" and position ~= "left" and position ~= "center" and position ~= "aboveCenter" and position ~= "belowCenter" then
-        return "mandatory 'message.position' string not valid option, got: `" .. tostring(position) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.position` string not valid option, got: `" .. tostring(position) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     local fontSize, fontStyle = message.fontSize, message.fontStyle
     if fontSize == nil then
-        return "mandatory 'message.fontSize' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.fontSize` string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontSize ~= "small" and fontSize ~= "medium" and fontSize ~= "large" and fontSize ~= "huge" and fontSize ~= "massive" and fontSize ~= "gigantic" then
-        return "mandatory 'message.fontSize' string not valid option, got: `" .. tostring(fontSize) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.fontSize` string not valid option, got: `" .. tostring(fontSize) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle == nil then
-        return "mandatory 'message.fontStyle' string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.fontStyle` string not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     if fontStyle ~= "regular" and fontStyle ~= "semibold" and fontStyle ~= "bold" then
-        return "mandatory 'message.fontStyle' string not valid option, got: `" .. tostring(fontStyle) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `message.fontStyle` string not valid option, got: `" .. tostring(fontStyle) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     -- The non standard font sizes need capturing separately as there's no label styles for them.
     local labelType
@@ -450,25 +450,25 @@ ShowMessage.GetMessageData = function(data, warningPrefix)
     if fontColorString ~= nil then
         fontColor = Colors[fontColorString] --[[@as Color]]
         if fontColor == nil then
-            return "'message.fontColor' specified not a valid option, got: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "`message.fontColor` specified not a valid option, got: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
     local maxWidth = message.maxWidth
     if maxWidth ~= nil then
         if type(maxWidth) ~= "number" then
-            return "optional 'message.maxWidth' is set, but isn't a number, is type: `" .. type(maxWidth) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional `message.maxWidth` is set, but isn't a number, is type: `" .. type(maxWidth) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         maxWidth = math.floor(maxWidth) --[[@as uint]]
         if maxWidth <= 0 then
-            return "optional 'message.maxWidth' is set, but not a positive number: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional `message.maxWidth` is set, but not a positive number: `" .. tostring(fontColorString) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     end
 
     local background = message.background
     if background ~= nil then
         if background ~= "main" and background ~= "contentInnerLight" and background ~= "transparent" and background ~= "brightGreen" and background ~= "brightRed" then
-            return "'message.background'provided, but not a valid option, got: `" .. tostring(background) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "`message.background` provided, but not a valid option, got: `" .. tostring(background) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     else
         background = "main"
@@ -488,12 +488,12 @@ end
 ShowMessage.GetCloseData = function(data, warningPrefix, currentTick)
     local close = data.close
     if close == nil then
-        return "mandatory 'close' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "mandatory `close` object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
     for key in pairs(data.audience--[[@as table<string, any>]] ) do
         if key ~= "logic" and key ~= "players" then
-            Logging.LogPrintWarning(warningPrefix .. "`close` contained an unexpected key that will be ignored: " .. tostring(key))
+            Logging.LogPrintWarning(warningPrefix .. "`close` contained an unexpected key that will be ignored: `" .. tostring(key) .. "`")
         end
     end
 
@@ -501,22 +501,22 @@ ShowMessage.GetCloseData = function(data, warningPrefix, currentTick)
     local closeTimeout = close.timeout
     if closeTimeout ~= nil then
         if type(closeTimeout) ~= "number" then
-            return "optional 'close.timeout' is set, but isn't a number, is type: `" .. type(closeTimeout) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional `close.timeout` is set, but isn't a number, is type: `" .. type(closeTimeout) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         if closeTimeout <= 0 then
-            return "'close.timeout' specified, but not valid positive number, got: `" .. tostring(closeTimeout) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "`close.timeout` specified, but not valid positive number, got: `" .. tostring(closeTimeout) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         closeTick = currentTick + math.floor(closeTimeout * 60)
         if closeTick > MathUtils.uintMax then
             closeTick = MathUtils.uintMax
-            Logging.LogPrintWarning(warningPrefix .. "`close.timeout` was set so large its been capped to the end of Factorio time, timeout requested: " .. tostring(closeTimeout))
+            Logging.LogPrintWarning(warningPrefix .. "`close.timeout` was set so large its been capped to the end of Factorio time, timeout requested: `" .. tostring(closeTimeout) .. "`")
         end
     end
 
     local closeButton
     if close.xbutton ~= nil then
         if type(close.xbutton) ~= "boolean" then
-            return "'close.xbutton' specified, but not a boolean or nil value, got: `" .. tostring(close.xbutton) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "`close.xbutton` specified, but not a boolean or nil value, got: `" .. tostring(close.xbutton) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
         closeButton = close.xbutton ---@cast closeButton - nil
     else
@@ -530,7 +530,7 @@ ShowMessage.GetCloseData = function(data, warningPrefix, currentTick)
     local closeButtonColor = close.xbuttonColor
     if closeButtonColor ~= nil then
         if closeButtonColor ~= "white" and closeButtonColor ~= "black" then
-            return "'close.xbuttonColor' specified, but not a valid option, got: `" .. tostring(closeButtonColor) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "`close.xbuttonColor` specified, but not a valid option, got: `" .. tostring(closeButtonColor) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     else
         closeButtonColor = "white"
@@ -559,20 +559,20 @@ ShowMessage.GetTimerData = function(data, warningPrefix)
 
     for key in pairs(data.audience--[[@as table<string, any>]] ) do
         if key ~= "logic" and key ~= "players" then
-            Logging.LogPrintWarning(warningPrefix .. "`timer` contained an unexpected key that will be ignored: " .. tostring(key))
+            Logging.LogPrintWarning(warningPrefix .. "`timer` contained an unexpected key that will be ignored: `" .. tostring(key) .. "`")
         end
     end
 
     local timerStartingValue = timer.startingValue
     if timerStartingValue == nil then
-        return "'timer.startingValue' is mandatory when the `timer` function is in use." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+        return "`timer.startingValue` is mandatory when the `timer` function is in use." ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     timerStartingValue = math.floor(timerStartingValue)
 
     local timerCountDirection = timer.countDirection
     if timerCountDirection ~= nil then
         if timerCountDirection ~= "up" and timerCountDirection ~= "down" then
-            return "optional 'timer.countDirection' string not valid option, got: `" .. tostring(timerCountDirection) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional `timer.countDirection` string not valid option, got: `" .. tostring(timerCountDirection) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     else
         timerCountDirection = "down"
@@ -581,7 +581,7 @@ ShowMessage.GetTimerData = function(data, warningPrefix)
     local timerDisplayFormat = timer.displayFormat
     if timerDisplayFormat ~= nil then
         if timerDisplayFormat ~= "second" and timerDisplayFormat ~= "minute" then
-            return "optional 'timer.displayFormat' string not valid option, got: `" .. tostring(timerDisplayFormat) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+            return "optional `timer.displayFormat` string not valid option, got: `" .. tostring(timerDisplayFormat) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     else
         timerDisplayFormat = "second"
