@@ -16,7 +16,7 @@ Date: 2020-10-XXXXX
   Bugfixes:
   Info:
     - Mod tidy up - Mod globals related to close buttons will remove themselves when finished with. Avoids the global list getting infinitely long which could in theory cause slowness or save file size growth over millennium. Makes any future debugging easier.
-    - Update this mod when no GUIs created by this mod are on the screen. This update isn't backwards upgradable as I don't think any streamer would upgrade the mod version mid GUI event. And there's been a lot of internal data changes, which would be a pain to migrate and test.
+    - Any old Message GUI's are removed as part of upgrading to this version. This is as a lot of back end state changes were made and it would be a nightmare to try and create the new data structure for these old entries. Just wait to update the mod when the old message GUIs are gone if they are critical to you.
 ---------------------------------------------------------------------------------------------------
 Version: 20.0.3
 Date: 2020-12-02

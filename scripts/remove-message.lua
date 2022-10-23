@@ -1,14 +1,5 @@
 local RemoveMessage = {} ---@class RemoveMessage
-local GUIUtil = require("utility.manager-libraries.gui-util")
-local Commands = require("utility.helper-utils.commands-utils")
 local Logging = require("utility.helper-utils.logging-utils")
-local EventScheduler = require("utility.manager-libraries.event-scheduler")
-local GUIActionsClick = require("utility.manager-libraries.gui-actions-click")
-local Colors = require("utility.lists.colors")
-local MathUtils = require("utility.helper-utils.math-utils")
-local StyleData = require("utility.lists.style-data")
-local MuppetStyles, MuppetFonts = StyleData.MuppetStyles, StyleData.MuppetFonts
-local StringUtils = require("utility.helper-utils.string-utils")
 
 ---@class RemoveMessageDetails
 ---@field messageId string
