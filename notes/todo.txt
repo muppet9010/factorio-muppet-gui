@@ -15,3 +15,5 @@ Future:
     - Take messages for player joined as a mod setting json object.
 
     - add nested message support with types, i.e. titles, content types, etc. just map to inner styles.
+
+    - move the input value checking on to a Utility once the functions are moved from command-utils to a generic way that works nicely with remote interface and command.

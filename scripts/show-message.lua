@@ -116,12 +116,12 @@ end
 ShowMessage.ShowMessage_DoIt = function(data, warningPrefix)
     local currentTick = game.tick
 
-    local audienceErrorMessage, players = ShowMessage.GetAudienceData(data)
+    local audienceErrorMessage, players = ShowMessage.GetAudienceData(data, warningPrefix)
     if audienceErrorMessage ~= nil then
         return audienceErrorMessage
     end
 
-    local messageErrorMessage, simpleText, position, labelType, fontType, fontSize, fontColor, maxWidth, background = ShowMessage.GetMessageData(data)
+    local messageErrorMessage, simpleText, position, labelType, fontType, fontSize, fontColor, maxWidth, background = ShowMessage.GetMessageData(data, warningPrefix)
     if messageErrorMessage ~= nil then
         return messageErrorMessage
     end
@@ -317,12 +317,19 @@ end
 
 --- Work out the audience settings from the raw data.
 ---@param data ShowMessageDetails
+---@param warningPrefix string
 ---@return string|nil errorMessage
 ---@return LuaPlayer[] players
 ---@return ShowMessage_Logic logic
-ShowMessage.GetAudienceData = function(data)
+ShowMessage.GetAudienceData = function(data, warningPrefix)
     if data.audience == nil then
         return "mandatory 'audience' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+    end
+
+    for key in pairs(data.audience--[[@as table<string, any>]] ) do
+        if key ~= "logic" and key ~= "players" then
+            Logging.LogPrintWarning(warningPrefix .. "`audience` contained an unexpected key that will be ignored: " .. tostring(key))
+        end
     end
 
     local players = {}
@@ -369,6 +376,7 @@ end
 
 --- Work out the message details from the raw data.
 ---@param data ShowMessageDetails
+---@param warningPrefix string
 ---@return string|nil errorMessage
 ---@return string simpleText
 ---@return ShowMessage_Position position
@@ -378,10 +386,16 @@ end
 ---@return Color fontColor
 ---@return uint|nil maxWidth
 ---@return ShowMessage_Background background
-ShowMessage.GetMessageData = function(data)
+ShowMessage.GetMessageData = function(data, warningPrefix)
     local message = data.message
     if message == nil then
         return "mandatory 'message' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
+    end
+
+    for key in pairs(data.audience--[[@as table<string, any>]] ) do
+        if key ~= "logic" and key ~= "players" then
+            Logging.LogPrintWarning(warningPrefix .. "`message` contained an unexpected key that will be ignored: " .. tostring(key))
+        end
     end
 
     local simpleText = message.simpleText
@@ -477,6 +491,12 @@ ShowMessage.GetCloseData = function(data, warningPrefix, currentTick)
         return "mandatory 'close' object not provided" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
 
+    for key in pairs(data.audience--[[@as table<string, any>]] ) do
+        if key ~= "logic" and key ~= "players" then
+            Logging.LogPrintWarning(warningPrefix .. "`close` contained an unexpected key that will be ignored: " .. tostring(key))
+        end
+    end
+
     local closeTick ---@type uint|nil
     local closeTimeout = close.timeout
     if closeTimeout ~= nil then
@@ -536,6 +556,12 @@ ShowMessage.GetTimerData = function(data, warningPrefix)
         return nil, timerFeatureUsed ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
     end
     timerFeatureUsed = true
+
+    for key in pairs(data.audience--[[@as table<string, any>]] ) do
+        if key ~= "logic" and key ~= "players" then
+            Logging.LogPrintWarning(warningPrefix .. "`timer` contained an unexpected key that will be ignored: " .. tostring(key))
+        end
+    end
 
     local timerStartingValue = timer.startingValue
     if timerStartingValue == nil then
