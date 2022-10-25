@@ -87,28 +87,18 @@ Remote Interface syntax: `remote.call("muppet_gui", "show_message", [OPTIONS TAB
 
 The [OPTIONS TABLE] in the remote interface syntax is the above Options object as a Lua table.
 
-###### Examples
+Examples:
 
-An auto closing GUI for all connected players, shown at the top of the screen:
-
-`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
-
-A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
-
-`/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="left", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
-
-A short essay on a transparent background at the center of the screen with a small max width:
-
-`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent", maxWidth=300} , close={xbutton=true, xbuttonColor="black"} })`
-
-A bright green background box with massive black text that auto closes above the center of the screen:
-
-`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="massive", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
-
-A countdown from 10 seconds and some text:
-
-`/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="something bad will happen in: [!TIMER!]", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="white", background="brightRed"} , close={timeout=10} , timer={startingValue=10} })`
-
+`. An auto closing GUI for all connected players, shown at the top of the screen:
+  > `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
+2. A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
+  > `/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="left", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
+3. A short essay on a transparent background at the center of the screen with a small max width:
+  > `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", position="center", fontSize="large", fontStyle="bold", fontColor="black", background="transparent", maxWidth=300} , close={xbutton=true, xbuttonColor="black"} })`
+4. A bright green background box with massive black text that auto closes above the center of the screen:
+  > `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a positive message", position="aboveCenter", fontSize="massive", fontStyle="bold", fontColor="black", background="brightGreen"} , close={timeout=10} })`
+5. A countdown from 10 seconds and some text:
+  > `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="something bad will happen in: [!TIMER!]", position="aboveCenter", fontSize="medium", fontStyle="bold", fontColor="white", background="brightRed"} , close={timeout=10} , timer={startingValue=10} })`
 
 -------------------------------------------------
 
@@ -122,27 +112,18 @@ The [OPTIONS JSON] in the command syntax is the above Options object in JSON str
 
 While JSON doesn't define `nil` or `null`, Factorio JSON does recognise `null` and convert it to `nil` in Lua.
 
-###### Examples
+Examples:
 
-An auto closing GUI for all connected players, shown at the top of the screen:
-
-`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5} }`
-
-A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
-
-`/muppet_gui_show_message { "audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"left", "fontSize":"small", "fontStyle":"bold"}, "close":{"xbutton":true} }`
-
-A short essay on a transparent background at the center of the screen with a small max width:
-
-`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent", "maxWidth":300}, "close":{"xbutton":true, "xbuttonColor":"black"} }`
-
-A bright green background box with massive black text that auto closes above the center of the screen:
-
-`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"massive", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10} }`
-
-A countdown from 10 seconds and some text:
-
-`/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"something bad will happen in: [!TIMER!]", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"white", "background":"brightRed"}, "close":{"timeout":10}, "timer":{"startingValue":10} }`
+1. An auto closing GUI for all connected players, shown at the top of the screen:
+  > `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a test message to show to all players", "position":"top", "fontSize":"large", "fontStyle":"regular", "fontColor":"lightRed"}, "close":{"timeout":5} }`
+2. A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
+  > `/muppet_gui_show_message { "audience": {"players":["player1", "player7"], "logic":"not"}, "message":{"simpleText":"a test message to show to all but a few players", "position":"left", "fontSize":"small", "fontStyle":"bold"}, "close":{"xbutton":true} }`
+3. A short essay on a transparent background at the center of the screen with a small max width:
+  > `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a really long message slap bang in the center of the screen right in the way. But at least you can see through the background of all this text.", "position":"center", "fontSize":"large", "fontStyle":"bold", "fontColor":"black", "background":"transparent", "maxWidth":300}, "close":{"xbutton":true, "xbuttonColor":"black"} }`
+4. A bright green background box with massive black text that auto closes above the center of the screen:
+  > `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"a positive message", "position":"aboveCenter", "fontSize":"massive", "fontStyle":"bold", "fontColor":"black", "background":"brightGreen"}, "close":{"timeout":10} }`
+5. A countdown from 10 seconds and some text:
+  > `/muppet_gui_show_message { "audience": {"logic":"all"}, "message":{"simpleText":"something bad will happen in: [!TIMER!]", "position":"aboveCenter", "fontSize":"medium", "fontStyle":"bold", "fontColor":"white", "background":"brightRed"}, "close":{"timeout":10}, "timer":{"startingValue":10} }`
 
 -------------------------------------------------
 
@@ -188,7 +169,7 @@ Remote Interface syntax: `remote.call("muppet_gui", "remove_message", [OPTIONS T
 
 The [OPTIONS TABLE] in the remote interface syntax is the above Options object as a Lua table.
 
-###### Examples
+Examples:
 
 Create and instantly close a message. This is an abstract example.
 
@@ -199,6 +180,8 @@ remote.call("muppet_gui", "remove_message", {messageId = messageIdToClose})
 ```
 
 -------------------------------------------------
+
+#### Complicated Usage Example 
 
 A real world example reporting the players alive state for the next 30 seconds. If they die we will briefly report their death. You will need to kill yourself to see the effect during the 30 seconds: `/sc game.player.character.die()`
 
