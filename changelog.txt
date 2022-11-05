@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 20.0.6
+Date: 2022-11-05
+  Features:
+  Changes:
+    - Changed the background option of `brightYellow` to be called `brightOrange` as this is its actual color.
+  Bugfixes:
+    - Before the background option of `brightYellow` was incorrectly reported as an invalid value. The new `brightOrange` value does work correctly.
+  Info:
+---------------------------------------------------------------------------------------------------
 Version: 20.0.5
 Date: 2022-10-27
   Features:

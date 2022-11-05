@@ -54,7 +54,7 @@ local StringUtils = require("utility.helper-utils.string-utils")
 ---@alias ShowMessage_Position "top"|"left"|"center"|"aboveCenter"|"belowCenter"
 ---@alias ShowMessage_FontSize "small"|"medium"|"large"|"huge"|"massive"|"gigantic"
 ---@alias ShowMessage_FontStyle "regular"|"semibold"|"bold"
----@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"|"brightGreen"|"brightRed"|
+---@alias ShowMessage_Background "main"|"contentInnerLight"|"transparent"|"brightGreen"|"brightRed"|"brightOrange"
 ---@alias ShowMessage_CloseButtonColor "white"|"black"
 ---@alias ShowMessage_TimerCountDirection "down"|"up"
 ---@alias ShowMessage_TimerDisplayFormat "second"|"minute"
@@ -476,7 +476,7 @@ ShowMessage.GetMessageData = function(data, warningPrefix)
 
     local background = message.background
     if background ~= nil then
-        if background ~= "main" and background ~= "contentInnerLight" and background ~= "transparent" and background ~= "brightGreen" and background ~= "brightRed" then
+        if background ~= "main" and background ~= "contentInnerLight" and background ~= "transparent" and background ~= "brightGreen" and background ~= "brightRed" and background ~= "brightOrange" then
             return "`message.background` provided, but not a valid option, got: `" .. tostring(background) .. "`" ---@diagnostic disable-line:missing-return-value # We don't need to return the other fields for a non success.
         end
     else

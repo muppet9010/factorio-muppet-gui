@@ -114,9 +114,9 @@ StyleData.GeneratePrototypes = function()
             { "_brightRed", { base = { position = { 136, 17 }, corner_size = 8 } }, 0, 0 },
             { "_brightRed_shadowSunken", { base = { position = { 136, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
             { "_brightRed_shadowRisen", { base = { position = { 136, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
-            { "_brightYellow", { base = { position = { 34, 17 }, corner_size = 8 } }, 0, 0 },
-            { "_brightYellow_shadowSunken", { base = { position = { 34, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
-            { "_brightYellow_shadowRisen", { base = { position = { 34, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
+            { "_brightOrange", { base = { position = { 34, 17 }, corner_size = 8 } }, 0, 0 },
+            { "_brightOrange_shadowSunken", { base = { position = { 34, 17 }, corner_size = 8 }, shadow = frameShadowSunken() }, 2, 0 },
+            { "_brightOrange_shadowRisen", { base = { position = { 34, 17 }, corner_size = 8 }, shadow = frameShadowRisen() }, 0, 2 },
         }
     ) do
         local graphicEmmyLuaName = string.sub(graphic[1], 2)
@@ -633,23 +633,23 @@ StyleData.MuppetStyles = {
             ["marginTL"] = "muppet_frame_brightRed_shadowRisen_marginTL",
             ["marginTL_paddingBR"] = "muppet_frame_brightRed_shadowRisen_marginTL_paddingBR",
         },
-        brightYellow = {
-            ["plain"] = "muppet_frame_brightYellow",
-            ["paddingBR"] = "muppet_frame_brightYellow_paddingBR",
-            ["marginTL"] = "muppet_frame_brightYellow_marginTL",
-            ["marginTL_paddingBR"] = "muppet_frame_brightYellow_marginTL_paddingBR",
+        brightOrange = {
+            ["plain"] = "muppet_frame_brightOrange",
+            ["paddingBR"] = "muppet_frame_brightOrange_paddingBR",
+            ["marginTL"] = "muppet_frame_brightOrange_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightOrange_marginTL_paddingBR",
         },
-        brightYellow_shadowSunken = {
-            ["plain"] = "muppet_frame_brightYellow_shadowSunken",
-            ["paddingBR"] = "muppet_frame_brightYellow_shadowSunken_paddingBR",
-            ["marginTL"] = "muppet_frame_brightYellow_shadowSunken_marginTL",
-            ["marginTL_paddingBR"] = "muppet_frame_brightYellow_shadowSunken_marginTL_paddingBR",
+        brightOrange_shadowSunken = {
+            ["plain"] = "muppet_frame_brightOrange_shadowSunken",
+            ["paddingBR"] = "muppet_frame_brightOrange_shadowSunken_paddingBR",
+            ["marginTL"] = "muppet_frame_brightOrange_shadowSunken_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightOrange_shadowSunken_marginTL_paddingBR",
         },
-        brightYellow_shadowRisen = {
-            ["plain"] = "muppet_frame_brightYellow_shadowRisen",
-            ["paddingBR"] = "muppet_frame_brightYellow_shadowRisen_paddingBR",
-            ["marginTL"] = "muppet_frame_brightYellow_shadowRisen_marginTL",
-            ["marginTL_paddingBR"] = "muppet_frame_brightYellow_shadowRisen_marginTL_paddingBR",
+        brightOrange_shadowRisen = {
+            ["plain"] = "muppet_frame_brightOrange_shadowRisen",
+            ["paddingBR"] = "muppet_frame_brightOrange_shadowRisen_paddingBR",
+            ["marginTL"] = "muppet_frame_brightOrange_shadowRisen_marginTL",
+            ["marginTL_paddingBR"] = "muppet_frame_brightOrange_shadowRisen_marginTL_paddingBR",
         },
     },
     scroll = {

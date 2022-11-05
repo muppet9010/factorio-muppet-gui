@@ -32,7 +32,7 @@ The mandatory option categories are listed below.
 | message | fontColor | optional | string | The color of the text. See notes for valid list of color options. If not provided or `nil` the default of `white` is used. |
 | message | simpleText | mandatory | string | The text to be shown in the message. To include a `timer` using its Option Group options see the notes section. |
 | message | maxWidth | optional | uint | Max width of the message box in pixels. Suggested minimum value is 200 and a large width of 1000. Text will wrap on to multiple lines automatically within the set width. Don't provide the option or set to nil if no max width is desired. Default is no max width and this works fine with shorter messages. |
-| message | background | optional | string | The background type of the GUI. Either `main`, `contentInnerLight`, `transparent`, `brightRed`, `brightGreen`, `brightYellow`. Defaults to `main`.
+| message | background | optional | string | The background type of the GUI. Either `main`, `contentInnerLight`, `transparent`, `brightRed`, `brightGreen`, `brightOrange`. Defaults to `main`.
 | close | timeout | special | uint | Either `timeout` or `xbutton` must be specified. If Timeout is provided and greater than 0 the message will auto close after this number of seconds. |
 | close | xbutton | special | boolean | Either `timeout` or `xbutton` must be specified. If XButton is enabled (true) then a close X button will be shown on the top right of the GUI message. |
 | close | xbuttonColor | optional | string | The color of the close button if its enabled. Either `white` or `black`. Defaults to `white`. |
@@ -73,7 +73,7 @@ Values are only returned to Remote Interface calls and not to Factorio Command.
 - `position` options are all relative and will be added to the end of any GUIs in that position on the screen. `top` is along the top of the screen, left to right. `left` is along the left edge of the screen, top to bottom. `center` is in the very center middle of the screen (horizontally and vertically), multiple GUIs expand horizontally. `aboveCenter` is about 1/3 down from the top middle of the screen, multiple GUIs expand horizontally. `belowCenter` is about 1/3 up from the bottom middle of the screen, multiple GUIs expand horizontally. If other mods add GUIs to the center of the screen then these will stack horizontally to this mod's 3 center position message GUIs.
 - `fontSize` option names correspond to specific font sizes available: `small` = 12, `medium` = 16, `large` = 18, `huge` = 36, `massive` = 60, `gigantic` = 100.
 - `fontColor` options can be found either in the mod files at `utility\lists\colors.lua` or at the website `https://www.rapidtables.com/web/color/html-color-codes.html`. The option defaults to the value of `white`.
-- `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color 9see through). `brightRed`, `brightGreen` and `brightYellow` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
+- `background` options are are from the main Factorio game: `main` is the default Factorio GUI grey colors. `contentInnerLight` is the light grey in some content backgrounds. `transparent` is no background color (see through). `brightRed`, `brightGreen` and `brightOrange` are self explanatory, but use of a non white `fontColor` and `xbuttonColor` is advised.
 - The various choices in the GUI are often limited by what graphics Vanilla Factorio includes. If there's something specific you'd like added raise it in the discussion section and I can check if there is already a graphic for it.
 - `timer` Option Group is used to define how a timer should be configured. You add the special text `[!TIMER!]` within the message. This will be replaced with the time which will update every second. It's advised to set the timeout to the same value as you want to count to so that on reaching 0 seconds remaining the message vanishes, but the timer will continue counting until removed.
 
@@ -89,7 +89,7 @@ The [OPTIONS TABLE] in the remote interface syntax is the above Options object a
 
 Examples:
 
-`. An auto closing GUI for all connected players, shown at the top of the screen:
+1. An auto closing GUI for all connected players, shown at the top of the screen:
   > `/sc remote.call("muppet_gui", "show_message", { audience={logic="all"} , message={simpleText="a test message to show to all players", position="top", fontSize="large", fontStyle="regular", fontColor="lightRed"} , close={timeout=5} })`
 2. A GUi with a close X button for all connected players not specifically excluded, shown in the left of the screen:
   > `/sc remote.call("muppet_gui", "show_message", { audience={players={"player1","player7"}, logic="not"} , message={simpleText="a test message to show to all but a few players", position="left", fontSize="small", fontStyle="bold"} , close={xbutton=true} })`
@@ -181,7 +181,7 @@ remote.call("muppet_gui", "remove_message", {messageId = messageIdToClose})
 
 -------------------------------------------------
 
-#### Complicated Usage Example 
+#### Complicated Usage Example
 
 A real world example reporting the players alive state for the next 30 seconds. If they die we will briefly report their death. You will need to kill yourself to see the effect during the 30 seconds: `/sc game.player.character.die()`
 
